@@ -39,64 +39,80 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 NC='\033[0m' # No Color
 
-# Check if root
-if [ "$EUID" -ne 0 ]1
-  then echo -e "${RED}Please run as root${NC}"
-  exit
-fi
-
 # Variables
-export ipAddr=''
-export ip6Addr=''
-export linux_relese=''
-
-# read arguments with while
-while [ $# -gt 0 ]; do
-    case "$1" in
-        -h|--help)
-            echo "Usage: yistc.sh [options]"
-            echo "Options:"
-            echo "  -h, --help            show brief help"
-            echo "  -i, --ip              set ip address"
-            echo "  -6, --ip6             set ip6 address"
-            exit 0
-            ;;
-        -i|--ip)
-            shift
-            if test $# -gt 0; then
-                export ipAddr=$1
-            else
-                echo "no ip specified"
-                exit 1
-            fi
-            shift
-            ;;
-        -6|--ip6)
-            shift
-            if test $# -gt 0; then
-                export ip6Addr=$1
-            else
-                echo "no ip6 specified"
-                exit 1
-            fi
-            shift
-            ;;
-        *)
-
-# if no arguments specified, show usage and waiting for input
-if [ $# -eq 0 ]; then
-    echo "Usage: yistc.sh [options]"
-    echo "Options:"
-    echo "  -h, --help            show brief help"
-    echo "  -i, --ip              set ip address"
-    echo "  -6, --ip6             set ip6 address"
-    exit 0
-fi
-
-# OS
 OS=$(uname -s) # Linux, FreeBSD, Darwin
 ARCH=$(uname -m) # x86_64, arm64, aarch64
 DISTRO=$( ([[ -e "/usr/bin/yum" ]] && echo 'CentOS') || ([[ -e "/usr/bin/apt" ]] && echo 'Debian') || echo 'unknown' )
 debug=$( [[ $OS == "Darwin" ]] && echo true || echo false )
 cnd=$( tr '[:upper:]' '[:lower:]' <<<"$1" )
 GITPROXY='https://ghproxy.com'
+
+# Check if root
+if [ "$EUID" -ne 0 ]
+  then echo -e "${RED}Please run as root${NC}"
+  exit
+fi
+
+show_menu() {
+    echo -e "
+    ${GREEN}yistc's Shell Script${NC} ${RED}${NZ_VERSION}${NC}
+    --- https://github.com/yistc/shell-scripts ---
+    ${GREEN}1.${NC}  Install Things
+    ${GREEN}2.${NC}  Initialize Server
+    ${GREEN}3.${NC}  Port Forward
+    ${GREEN}4.${NC}  System Bench
+    ————————————————-
+    ${GREEN}5.${NC}  Update this script
+    ————————————————-
+    ${GREEN}0.${NC}  Exit
+    "
+    echo && read -ep "请输入选择 [0-13]: " num
+    
+    case "${num}" in
+        0)
+            exit 0
+        ;;
+        1)
+            install_dashboard
+        ;;
+        2)
+            modify_dashboard_config
+        ;;
+        3)
+            start_dashboard
+        ;;
+        4)
+            stop_dashboard
+        ;;
+        5)
+            restart_and_update
+        ;;
+        6)
+            show_dashboard_log
+        ;;
+        7)
+            uninstall_dashboard
+        ;;
+        8)
+            install_agent
+        ;;
+        9)
+            modify_agent_config
+        ;;
+        10)
+            show_agent_log
+        ;;
+        11)
+            uninstall_agent
+        ;;
+        12)
+            restart_agent
+        ;;
+        13)
+            update_script
+        ;;
+        *)
+            echo -e "${RED}请输入正确的数字 [0-13]${NC}"
+        ;;
+    esac
+}
