@@ -50,8 +50,34 @@ GITPROXY='https://ghproxy.com'
 # Check if root
 if [ "$EUID" -ne 0 ]
   then echo -e "${RED}Please run as root${NC}"
-  exit
+  exit 0
 fi
+
+update_pkg_manager() {
+    if [[ $DISTRO == "Debian" ]]; then
+        apt update -y && apt install -y curl wget
+    elif [[ $DISTRO == "CentOS" ]]; then
+        yum update -y && yum install -y curl wget
+    fi
+}
+
+show_install_menu() {
+    # ask what to install
+    ehco -e "
+    What do you want to install?
+    ${GREEN}1.${NC} Docker ${GREEN}2.${NC} Nginx ${GREEN}3.${NC} Pyenv & Python ${GREEN}4.${NC} Rust
+    ${GREEN}5.${NC} Rclone ${GREEN}6.${NC} Redis ${GREEN}7.${NC} Wireguard ${GREEN}8.${NC} Snell
+    ${GREEN}9.${NC} Gost ${GREEN}10.${NC} Realm ${GREEN}11.${NC} Shawdowsocks-Rust
+    ------------------------------
+    ${GREEN}99.${NC} Return to main menu
+    ------------------------------
+    ${GREEN}0.${NC} Exit
+    "
+    echo && read -ep "Please enter your choice: " num
+
+    case "${num}" in
+
+}
 
 show_menu() {
     echo -e "
@@ -73,7 +99,7 @@ show_menu() {
             exit 0
         ;;
         1)
-            install_dashboard
+            show_install_menu
         ;;
         2)
             modify_dashboard_config
