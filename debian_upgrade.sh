@@ -42,6 +42,8 @@ do_debian12_upgrade(){
 
     sed -i 's/bullseye/bookworm/g' /etc/apt/sources.list
     sed -i 's/bullseye/bookworm/g' /etc/apt/sources.list.d/*.list
+    
+    sed -i 's/bullseye-security/bullseye-bookworm/g' /etc/apt/sources.list
 
     sed -i 's/non-free/non-free non-free-firmware/g' /etc/apt/sources.list
 
