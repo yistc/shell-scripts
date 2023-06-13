@@ -37,7 +37,9 @@ ask_menu() {
     ${GREEN}5.${NC} Install Docker
     ${GREEN}6.${NC} Sysctl tuning
     "
-    echo && read -ep "Please enter your choice: (Default: 1) " num
+    echo && echo "Please enter your choice: (Default: 1) "
+    
+    read num
 
     case "${num}" in
         1)
@@ -167,3 +169,5 @@ install_all() {
     install_docker
     sysctl_tuning
 }
+
+ask_menu
