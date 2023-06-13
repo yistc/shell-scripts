@@ -1,4 +1,4 @@
-#! /usr/bin/zsh
+#! /bin/bash
 
 # Features
 # 1. DD install system
