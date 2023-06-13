@@ -95,6 +95,8 @@ echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
 # pyenv update plugin
 git clone https://github.com/pyenv/pyenv-update.git /usr/local/bin/pyenv/plugins/pyenv-update
 
+exec $SHELL
+
 # install CPython 3.11.4
 /usr/local/bin/pyenv install 3.11.4
 }
@@ -104,7 +106,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 }
 
 install_zinit() {
-echo '${PURPLE}Installing Zinit...${NC}'
+echo -e '${PURPLE}Installing Zinit...${NC}'
 
 git clone https://github.com/zdharma-continuum/zinit.git /root/.local/share/zinit/zinit.git
 echo 'source "/root/.local/share/zinit/zinit.git/zinit.zsh"' >> ~/.zshrc
@@ -113,7 +115,7 @@ echo 'zinit light zdharma/fast-syntax-highlighting' >> ~/.zshrc
 echo 'zinit load zdharma/history-search-multi-word' >> ~/.zshrc
 echo 'zinit snippet OMZ::plugins/git/git.plugin.zsh' >> ~/.zshrc
 
-echo '${PURPLE}Plugins installed:${NC}'
+echo -e '${PURPLE}Plugins installed:${NC}'
 echo '  zsh-autosuggestions'
 echo '  fast-syntax-highlighting'
 echo '  history-search-multi-word'
