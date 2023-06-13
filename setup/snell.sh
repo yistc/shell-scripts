@@ -11,12 +11,14 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 NC='\033[0m' # No Color
 
+# snell binary
 curl -LO https://dl.nssurge.com/snell/snell-server-v4.0.1-linux-amd64.zip
 unzip snell-server-v4.0.1-linux-amd64.zip
 chmod +x snell-server && mv snell-server /usr/local/bin/snell
 rm snell-server-v4.0.1-linux-amd64.zip
 mkdir -p /etc/snell
 
+# psk and port
 PSK=$(openssl rand -base64 32 | sed 's/[^a-z  A-Z 0-9]//g')
 
 echo -n "${PURPLE}Enter port for snell:${NC}"
@@ -49,5 +51,7 @@ WantedBy=multi-user.target
 EOF
 systemctl daemon-reload
 systemctl enable --now snell
+systemctl restart snell
+echo "---------------------------------------------"
 echo "${RED}Snell PSK: $PSK${NC}"
 echo "${RED}Snell Port: $PORT${NC}"
