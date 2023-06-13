@@ -16,9 +16,12 @@ unzip snell-server-v4.0.1-linux-amd64.zip
 chmod +x snell-server && mv snell-server /usr/local/bin/snell
 rm snell-server-v4.0.1-linux-amd64.zip
 mkdir -p /etc/snell
+
 PSK=$(openssl rand -base64 32 | sed 's/[^a-z  A-Z 0-9]//g')
-echo -n "Enter port for snell:"
+
+echo -n "${PURPLE}Enter port for snell:${NC}"
 read PORT
+
 cat > /etc/snell/snell.conf <<EOF
 [snell-server]
 listen = 0.0.0.0:$PORT
