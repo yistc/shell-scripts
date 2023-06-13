@@ -95,10 +95,10 @@ echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
 # pyenv update plugin
 git clone https://github.com/pyenv/pyenv-update.git /usr/local/bin/pyenv/plugins/pyenv-update
 
-exec $SHELL
+pyenv init -
 
 # install CPython 3.11.4
-/usr/local/bin/pyenv install 3.11.4
+pyenv install 3.11.4
 }
 
 install_rust() {
