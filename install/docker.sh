@@ -24,21 +24,15 @@ _exit() {
     exit 1
 }
 
-# if centos, warn user and exit 1
-if [[ $DISTRO == 'CentOS' ]]; then
-    echo -e "${RED}CentOS is not supported!${NC}"
-    exit 1
-fi
-
 # uninstall previous versions
-apt remove docker docker-engine docker.io containerd runc
+apt remove docker docker-doc podman-docker docker-engine docker.io containerd runc
 
 apt update -y
 apt install -y apt-transport-https ca-certificates gnupg lsb-release
 
 debian_install() {
-# remove old docker
 apt remove docker docker-engine docker.io containerd runc
+
 apt update -y
 apt install -y \
     apt-transport-https \
@@ -71,3 +65,53 @@ EOF
 
 systemctl restart docker
 }
+
+ubuntu_install() {
+    apt remove docker docker-doc podman-docker docker-engine docker.io containerd runc
+    apt install ca-certificates curl gnupg -y
+
+    install -m 0755 -d /etc/apt/keyrings
+
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+    chmod a+r /etc/apt/keyrings/docker.gpg
+
+    echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+  apt update -y
+
+  apt install install docker-ce docker-ce-cli containerd.io docker-buildx-plugin -y
+
+  curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+  docker-compose -v
+
+  # limiting log size
+  cat >/etc/docker/daemon.json<<EOF
+  {
+    "log-driver": "json-file",
+    "log-opts": {
+      "max-size": "5m"
+    }
+  }
+  EOF
+
+  systemctl restart docker
+}
+
+# install docker
+# if centos, warn user and exit 1
+
+if [[ $DISTRO == 'CentOS' ]]; then
+    echo -e "${RED}CentOS is not supported!${NC}"
+    exit 1
+elif [[ $DISTRO == 'Debian' ]]; then
+    debian_install
+elif [[ $DISTRO == 'Ubuntu' ]]; then
+    ubuntu_install
+else
+    echo -e "${RED}Unknown distro!${NC}"
+    exit 1
+fi

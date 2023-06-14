@@ -123,7 +123,8 @@ echo '  git'
 }
 
 install_docker() {
-curl -LO 
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/docker.sh && bash docker.sh
+rm -f docker.sh
 }
 
 sysctl_tuning() {
