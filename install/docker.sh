@@ -96,7 +96,7 @@ ubuntu_install() {
       "max-size": "5m"
     }
   }
-  EOF
+EOF
 
   systemctl restart docker
 }
