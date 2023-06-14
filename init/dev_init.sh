@@ -123,39 +123,7 @@ echo '  git'
 }
 
 install_docker() {
-# remove old docker
-apt remove docker docker-engine docker.io containerd runc
-apt update -y
-apt install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release
-
-curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-apt update -y
-apt install docker-ce docker-ce-cli containerd.io -y
-docker -v
-
-curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
-docker-compose -v
-
-# limiting log size
-cat >/etc/docker/daemon.json<<EOF
-{
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "5m"
-  }
-}
-EOF
-
-systemctl restart docker
+curl -LO 
 }
 
 sysctl_tuning() {
