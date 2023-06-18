@@ -60,9 +60,31 @@ echo -e "${GREEN}Distro: ${DISTRO}, Arch: ${ARCH}${NC}"
 if [[ "$ARCH" == "x86_64" ]]; then
   # if debian
   if [[ "$DISTRO" == "debian" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_init.sh
-    bash debian_init.sh
+    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_amd64_init.sh
+    bash debian_amd64_init.sh
   # if ubuntu
   elif [[ "$DISTRO" == "ubuntu" ]]; then
     curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_init.sh
     bash ubuntu_init.sh
+  else
+    echo "Not supported"
+    exit 1
+  fi
+# if arm64
+elif [[ "$ARCH" == "arm64" ]]; then
+  # if debian
+  if [[ "$DISTRO" == "debian" ]]; then
+    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_arm64_init.sh
+    bash debian_arm64_init.sh
+  # if ubuntu
+  elif [[ "$DISTRO" == "ubuntu" ]]; then
+    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_init.sh
+    bash ubuntu_init.sh
+  else
+    echo "Not supported"
+    exit 1
+  fi
+else
+  echo "Not supported"
+  exit 1
+fi
