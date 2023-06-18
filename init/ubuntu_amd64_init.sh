@@ -259,6 +259,23 @@ bash vim.sh
 rm vim.sh
 
 # locale
+sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+locale-gen
+update-locale LANG=en_US.UTF-8
+
+# Swap
+SWAP=$(free | grep Swap | awk '{print $2}')
+
+if [ "$SWAP" -gt 0 ]; then
+    echo "Swap is enabled."
+else
+    echo -e "${GREEN}Swap is not enabled. Setting up swap ..${NC}"
+    fallocate -l 1G /var/swapfile
+    chmod 600 /var/swapfile
+    mkswap /var/swapfile
+    swapon /var/swapfile
+    echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab
+fi
 
 # clean up
 rm init.sh
