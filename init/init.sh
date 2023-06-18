@@ -78,8 +78,8 @@ elif [[ "$ARCH" == "arm64" ]]; then
     bash debian_arm64_init.sh
   # if ubuntu
   elif [[ "$DISTRO" == "ubuntu" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_init.sh
-    bash ubuntu_init.sh
+    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_arm64_init.sh
+    bash ubuntu_arm64_init.sh
   else
     echo "Not supported"
     exit 1
