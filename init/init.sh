@@ -287,6 +287,7 @@ rm starship-x86_64-unknown-linux-gnu.tar.gz
 tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
 curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}_amd64.deb"
 dpkg -i "zoxide_${tag_name#v}_amd64.deb"
+rm "zoxide_${tag_name#v}_amd64.deb"
 
 # vim config
 curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh
