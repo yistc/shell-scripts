@@ -260,4 +260,8 @@ rm vim.sh
 
 # locale
 
+# clean up
+rm init.sh
+rm debian_amd64_init.sh
+
 reboot
