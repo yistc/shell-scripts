@@ -28,11 +28,11 @@ GITPROXY='https://ghproxy.com'
 # 通过 /etc/os-release 文件判断发行版
 if [ -f /etc/os-release ]; then
     source /etc/os-release
-    if [[ $ID = "debian" || $ID_LIKE = "debian" ]]; then
+    if [[ $ID = "debian" ]]; then
         DISTRO="debian"
-    elif [[ $ID = "ubuntu" || $ID_LIKE = "ubuntu" ]]; then
+    elif [[ $ID = "ubuntu"]]; then
         DISTRO="ubuntu"
-    elif [[ $ID = "centos" || $ID_LIKE =~ "centos fedora" ]]; then
+    elif [[ $ID = "centos" ]]; then
         DISTRO="centos"
     else
         DISTRO="unknown"
