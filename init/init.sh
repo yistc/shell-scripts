@@ -55,5 +55,14 @@ fi
 # echo distro and arch
 echo -e "${GREEN}Distro: ${DISTRO}, Arch: ${ARCH}${NC}"
 
-
-
+# init based on distro and arch
+# if x86_64
+if [[ "$ARCH" == "x86_64" ]]; then
+  # if debian
+  if [[ "$DISTRO" == "debian" ]]; then
+    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_init.sh
+    bash debian_init.sh
+  # if ubuntu
+  elif [[ "$DISTRO" == "ubuntu" ]]; then
+    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_init.sh
+    bash ubuntu_init.sh
