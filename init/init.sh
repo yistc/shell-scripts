@@ -30,7 +30,7 @@ if [ -f /etc/os-release ]; then
     source /etc/os-release
     if [[ $ID = "debian" ]]; then
         DISTRO="debian"
-    elif [[ $ID = "ubuntu"]]; then
+    elif [[ $ID = "ubuntu" ]]; then
         DISTRO="ubuntu"
     elif [[ $ID = "centos" ]]; then
         DISTRO="centos"
