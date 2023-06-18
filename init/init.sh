@@ -4,6 +4,11 @@
 
 trap _exit INT QUIT TERM
 
+_exit() {
+    echo -e "${RED}Exiting...${NC}"
+    exit 1
+}
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -16,13 +21,39 @@ NC='\033[0m' # No Color
 
 OS=$(uname -s) # Linux, FreeBSD, Darwin
 ARCH=$(uname -m) # x86_64, arm64, aarch64
-DISTRO=$( ([[ -e "/usr/bin/yum" ]] && echo 'CentOS') || ([[ -e "/usr/bin/apt" ]] && echo 'Debian') || echo 'unknown' )
+# DISTRO=$( ([[ -e "/usr/bin/yum" ]] && echo 'CentOS') || ([[ -e "/usr/bin/apt" ]] && echo 'Debian') || echo 'unknown' )
 GITPROXY='https://ghproxy.com'
 
-_exit() {
-    echo -e "${RED}Exiting...${NC}"
-    exit 1
-}
+# check linux release
+# 通过 /etc/os-release 文件判断发行版
+if [ -f /etc/os-release ]; then
+    source /etc/os-release
+    if [[ $ID = "debian" || $ID_LIKE = "debian" ]]; then
+        DISTRO="debian"
+    elif [[ $ID = "ubuntu" || $ID_LIKE = "ubuntu" ]]; then
+        DISTRO="ubuntu"
+    elif [[ $ID = "centos" || $ID_LIKE =~ "centos fedora" ]]; then
+        DISTRO="centos"
+    else
+        DISTRO="unknown"
+    fi
+# 通过 /etc/*-release 文件判断发行版
+elif [ -f /etc/centos-release ]; then
+    DISTRO="centos"
+elif [ -f /etc/redhat-release ]; then
+    DISTRO="redhat"
+elif [ -f /etc/fedora-release ]; then
+    DISTRO="fedora"
+elif [ -f /etc/debian_version ]; then
+    DISTRO="debian"
+elif [ -f /etc/lsb-release ]; then
+    DISTRO="ubuntu"
+else
+    DISTRO="unknown"
+fi
+
+# echo distro and arch
+echo -e "${GREEN}Distro: ${DISTRO}, Arch: ${ARCH}${NC}"
 
 # ask for server hostname
 # if leave blank, do not change
