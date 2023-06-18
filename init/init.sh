@@ -258,6 +258,11 @@ curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxi
 dpkg -i "zoxide_${tag_name#v}_amd64.deb"
 
 # vim config
-wget https://gist.githubusercontent.com/yistc/de5b8c0f9fc5536d528ccfa75c9b9328/raw/vim.sh
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh
 bash vim.sh
 rm vim.sh
+
+# locale
+
+reboot
+
