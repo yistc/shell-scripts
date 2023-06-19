@@ -43,7 +43,7 @@ else
     exit 1
 fi
 
-cat > /lib/systemd/system/tuics.service <<EOF
+cat > /usr/lib/systemd/system/tuic.service <<EOF
 [Unit]
 Description=TUIC PROXY
 Documentation=https://github.com/EAimTY/tuic
