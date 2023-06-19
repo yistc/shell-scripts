@@ -30,11 +30,11 @@ GITPROXY='https://ghproxy.com'
 # like tuic-server-1.0.0
 tag_name=$(curl -s https://api.github.com/repos/EAimTY/tuic/releases/latest | grep tag_name|cut -f4 -d "\"")
 
-if [[ ARCH == "x86_64" ]]; then
+if [[ "${ARCH}" == "x86_64" ]]; then
     curl -LO "https://github.com/EAimTY/tuic/releases/download/${tag_name}/${tag_name}-x86_64-unknown-linux-gnu"
     mv "${tag_name}-x86_64-unknown-linux-gnu" /usr/local/bin/tuics
     chmod +x /usr/local/bin/tuics
-elif [[ ARCH == "arm64" || ARCH == "aarch64" ]]; then
+elif [[ "${ARCH}" == "arm64" || "${ARCH}" == "aarch64" ]]; then
     curl -LO "https://github.com/EAimTY/tuic/releases/download/${tag_name}/${tag_name}-aarch64-unknown-linux-gnu"
     mv "${tag_name}-aarch64-unknown-linux-gnu" /usr/local/bin/tuics
     chmod +x /usr/local/bin/tuics
