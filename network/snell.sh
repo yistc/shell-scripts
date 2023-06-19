@@ -11,11 +11,24 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 NC='\033[0m' # No Color
 
-# snell binary
-curl -LO https://dl.nssurge.com/snell/snell-server-v4.0.1-linux-amd64.zip
-unzip snell-server-v4.0.1-linux-amd64.zip
-chmod +x snell-server && mv snell-server /usr/local/bin/snell
-rm snell-server-v4.0.1-linux-amd64.zip
+ARCH=$(uname -m) # x86_64, arm64, aarch64
+
+if [[ "$ARCH" == "x86_64" ]]; then
+    curl -LO https://dl.nssurge.com/snell/snell-server-v4.0.1-linux-amd64.zip
+    unzip snell-server-v4.0.1-linux-amd64.zip
+    chmod +x snell-server && mv snell-server /usr/local/bin/snell
+    rm snell-server-v4.0.1-linux-amd64.zip
+
+elif [[ "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
+    curl -LO https://dl.nssurge.com/snell/snell-server-v4.0.1-linux-aarch64.zip
+    unzip snell-server-v4.0.1-linux-aarch64.zip
+    chmod +x snell-server && mv snell-server /usr/local/bin/snell
+    rm snell-server-v4.0.1-linux-aarch64.zip
+else
+    echo "Error: This script only supports x86_64, arm64 and aarch64."
+    exit 1
+fi
+
 mkdir -p /etc/snell
 
 # psk and port

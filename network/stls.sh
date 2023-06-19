@@ -30,7 +30,7 @@ mv shadow-tls-x86_64-unknown-linux-musl /usr/local/bin/stls
 chmod +x /usr/local/bin/stls
 
 PASS=$(openssl rand -base64 32 | sed 's/[^a-z  A-Z 0-9]//g')
-echo -n "${PURPLE}Enter port for snell:${NC}"
+echo -ne "${PURPLE}Enter port for snell:${NC}"
 read PORT
 
 cat > /etc/systemd/system/stls.service << EOF
