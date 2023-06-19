@@ -33,6 +33,9 @@ PASS=$(openssl rand -base64 32 | sed 's/[^a-z  A-Z 0-9]//g')
 echo -ne "${PURPLE}Enter port for snell:${NC}"
 read PORT
 
+echo -ne "${PURPLE}Enter proxy port:${NC}"
+read PORT2
+
 cat > /etc/systemd/system/stls.service << EOF
 [Unit]
 Description=Shadow-TLS Server Service
@@ -42,7 +45,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/stls --fastopen --v3 server --listen 0.0.0.0:$PORT --server 127.0.0.1:10091 --tls gateway.icloud.com --password $PASS
+ExecStart=/usr/local/bin/stls --fastopen --v3 server --listen 0.0.0.0:$PORT --server 127.0.0.1:$PORT2 --tls gateway.icloud.com --password $PASS
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=stls
