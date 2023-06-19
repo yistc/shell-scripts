@@ -31,10 +31,10 @@ chmod +x /usr/local/bin/stls
 
 PASS=$(openssl rand -base64 32 | sed 's/[^a-z  A-Z 0-9]//g')
 echo -ne "${PURPLE}Enter port for snell:${NC}"
-read PORT
+read SNELL_PORT
 
 echo -ne "${PURPLE}Enter proxy port:${NC}"
-read PORT2
+read PROXY_PORT
 
 cat > /etc/systemd/system/stls.service << EOF
 [Unit]
@@ -45,7 +45,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/stls --fastopen --v3 server --listen 0.0.0.0:$PORT --server 127.0.0.1:$PORT2 --tls gateway.icloud.com --password $PASS
+ExecStart=/usr/local/bin/stls --fastopen --v3 server --listen 0.0.0.0:$PROXY_PORT --server 127.0.0.1:$SNELL_PORT --tls gateway.icloud.com --password $PASS
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=stls
