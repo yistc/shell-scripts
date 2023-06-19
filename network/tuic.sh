@@ -63,5 +63,6 @@ EOF
 systemctl daemon-reload
 
 # tell user to edit /etc/tuic/tuic.json
+mkdir -p /etc/tuic
 echo -e "${GREEN}Please provide a valid config file: \n/etc/tuic/tuic.json${NC}"
 echo -e "${GREEN}systemctl enable tuics --now${NC}"
