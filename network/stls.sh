@@ -58,3 +58,4 @@ systemctl daemon-reload
 systemctl enable stls --now
 
 echo -e "${GREEN}Password: $PASS${NC}"
+rm -f stls.sh

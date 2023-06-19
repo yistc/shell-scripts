@@ -68,3 +68,4 @@ systemctl restart snell
 echo "---------------------------------------------"
 echo "${RED}Snell PSK: $PSK${NC}"
 echo "${RED}Snell Port: $PORT${NC}"
+rm -f snell.sh
