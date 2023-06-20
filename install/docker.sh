@@ -115,3 +115,5 @@ else
     echo -e "${RED}Unknown distro!${NC}"
     exit 1
 fi
+
+rm docker.sh
