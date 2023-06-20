@@ -95,7 +95,9 @@ echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
 # pyenv update plugin
 git clone https://github.com/pyenv/pyenv-update.git /usr/local/bin/pyenv/plugins/pyenv-update
 
-pyenv init -
+export PYENV_ROOT="/usr/local/bin/pyenv"
+command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init -)"
 
 # install CPython 3.11.4
 pyenv install 3.11.4
