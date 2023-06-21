@@ -56,5 +56,5 @@ systemctl daemon-reload
 systemctl start ssrust
 systemctl enable ssrust --now
 cat /etc/ssrust/config.json
-echo "Server IP: \n$(curl -s http://checkip.amazonaws.com/)"
+echo -e "Server IP: \n$(curl -s http://checkip.amazonaws.com/)"
 rm -f $zip_name
