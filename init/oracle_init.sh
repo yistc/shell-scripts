@@ -58,7 +58,7 @@ if [[ "$ARCH" == "x86_64" ]]; then
     curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_amd64_init.sh
     bash ubuntu_amd64_init.sh
 # if arm64
-elif [[ "$ARCH" == "arm64" ]]; then
+elif [[ "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
     curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_arm64_init.sh
     bash ubuntu_arm64_init.sh
 else
