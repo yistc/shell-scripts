@@ -51,6 +51,9 @@ systemctl stop rpcbind.socket
 systemctl disable rpcbind
 systemctl disable rpcbind.socket
 
+# clear ~/.ssh/authroized_keys
+rm -rf ~/.ssh/authorized_keys
+
 if [[ "$ARCH" == "x86_64" ]]; then
     curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_amd64_init.sh
     bash ubuntu_amd64_init.sh
