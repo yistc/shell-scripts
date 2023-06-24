@@ -51,7 +51,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo net-tools xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git -y
+apt install sudo net-tools xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh rsync unzip vim ripgrep git -y
 
 # set zsh
 chsh -s `which zsh`
