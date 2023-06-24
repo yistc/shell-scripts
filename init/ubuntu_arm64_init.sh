@@ -52,7 +52,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo net-tools rsync xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git -y
+apt install sudo net-tools rsync xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git locales -y
 
 # set zsh
 chsh -s `which zsh`
@@ -241,3 +241,45 @@ rm -rf "fd-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "fd-$tag_name-aarch64-unk
 curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/bottom.sh
 bash bottom.sh
 rm bottom.sh
+
+# starship
+curl -LO https://github.com/starship/starship/releases/latest/download/starship-aarch64-unknown-linux-musl.tar.gz
+tar zxvf starship-aarch64-unknown-linux-musl.tar.gz
+mv starship /usr/local/bin/starship
+rm starship-aarch64-unknown-linux-musl.tar.gz
+
+# install zoxide
+tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}_arm64.deb"
+dpkg -i "zoxide_${tag_name#v}_arm64.deb"
+rm "zoxide_${tag_name#v}_arm64.deb"
+
+# vim config
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh
+bash vim.sh
+rm vim.sh
+
+# locale
+sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+locale-gen
+update-locale LANG=en_US.UTF-8
+
+# Swap
+SWAP=$(free | grep Swap | awk '{print $2}')
+
+if [ "$SWAP" -gt 0 ]; then
+    echo "Swap is enabled."
+else
+    echo -e "${GREEN}Swap is not enabled. Setting up swap ..${NC}"
+    fallocate -l 1G /var/swapfile
+    chmod 600 /var/swapfile
+    mkswap /var/swapfile
+    swapon /var/swapfile
+    echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab
+fi
+
+rm init.sh
+rm ubuntu_arm64_init.sh
+rm oracle_init.sh
+
+reboot

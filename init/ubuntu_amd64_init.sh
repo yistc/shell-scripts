@@ -51,7 +51,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo net-tools xz-utils rsync lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git -y
+apt install sudo net-tools xz-utils rsync lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git locales -y
 
 # set zsh
 chsh -s `which zsh`
@@ -280,5 +280,6 @@ fi
 # clean up
 rm init.sh
 rm ubuntu_amd64_init.sh
+rm oracle_init.sh
 
 reboot
