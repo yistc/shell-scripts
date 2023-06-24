@@ -31,7 +31,7 @@ tag_name=$(curl -s https://api.github.com/repos/ClementTsang/bottom/releases/lat
 if [[ $ARCH == "x86_64" ]]; then
     download_url="https://github.com/ClementTsang/bottom/releases/download/$tag_name/bottom_x86_64-unknown-linux-gnu.tar.gz"
     zip_name="bottom_x86_64-unknown-linux-gnu.tar.gz"
-elif [[ $ARCH == "arm64" ]]; then
+elif [[ $ARCH == "arm64" || $ARCH == "aarch64" ]]; then
     download_url="https://github.com/ClementTsang/bottom/releases/download/$tag_name/bottom_aarch64-unknown-linux-gnu.tar.gz"
     zip_name="bottom_aarch64-unknown-linux-gnu.tar.gz"
 fi

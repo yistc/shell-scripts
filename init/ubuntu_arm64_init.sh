@@ -215,3 +215,29 @@ tar zxvf "dust-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "dust-$tag_name-aarch
 mv "dust-$tag_name-aarch64-unknown-linux-gnu/dust" /usr/local/bin
 chmod +x /usr/local/bin/dust
 rm -rf "dust-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "dust-$tag_name-aarch64-unknown-linux-gnu"
+
+# install lsd
+tag_name=$(curl -s https://api.github.com/repos/lsd-rs/lsd/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/lsd-rs/lsd/releases/download/$tag_name/lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+tar zxvf "lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+mv "lsd-$tag_name-aarch64-unknown-linux-gnu/lsd" /usr/local/bin
+chmod +x /usr/local/bin/lsd
+rm -rf "lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "lsd-$tag_name-x86_64-unknown-linux-gnu"
+
+# lsd theme
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/lsd_theme.sh
+bash lsd_theme.sh
+rm lsd_theme.sh
+
+# install fd, an alternative to `find` written in Rust
+tag_name=$(curl -s https://api.github.com/repos/sharkdp/fd/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/sharkdp/fd/releases/download/$tag_name/fd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+tar zxvf "fd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+mv "fd-$tag_name-aarch64-unknown-linux-gnu/fd" /usr/local/bin
+chmod +x /usr/local/bin/fd
+rm -rf "fd-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "fd-$tag_name-aarch64-unknown-linux-gnu"
+
+# install bottom
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/bottom.sh
+bash bottom.sh
+rm bottom.sh
