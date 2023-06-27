@@ -33,6 +33,10 @@ fi
 # ipv4 precedence over ipv6
 sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
 
+# dns
+echo 'nameserver 1.1.1.1' >> /etc/resolv.conf
+echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
+
 # bbr
 cat >>/etc/sysctl.conf<<EOF
 net.core.default_qdisc = fq_pie

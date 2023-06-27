@@ -29,6 +29,10 @@ if [[ -n ${hostname} ]]; then
     echo "127.0.0.1 $hostname" >> /etc/hosts
 fi
 
+# dns
+echo 'nameserver 1.1.1.1' >> /etc/resolv.conf
+echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
+
 # ipv4 precedence over ipv6
 sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
 
