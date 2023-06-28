@@ -252,6 +252,14 @@ tar zxvf starship-aarch64-unknown-linux-musl.tar.gz
 mv starship /usr/local/bin/starship
 rm starship-aarch64-unknown-linux-musl.tar.gz
 
+# install bat
+tag_name=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/sharkdp/bat/releases/download/${tag_name}/bat_${tag_name#v}_arm64.deb"
+dpkg -i "bat_${tag_name#v}_arm64.deb"
+rm -f "bat_${tag_name#v}_arm64.deb"
+
+echo 'export BAT_THEME="Solarized (light)"' >> ~/.zshrc
+
 # install zoxide
 tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
 curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}_arm64.deb"

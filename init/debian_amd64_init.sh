@@ -257,6 +257,14 @@ curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxi
 dpkg -i "zoxide_${tag_name#v}_amd64.deb"
 rm "zoxide_${tag_name#v}_amd64.deb"
 
+# install bat
+tag_name=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/sharkdp/bat/releases/download/${tag_name}/bat_${tag_name#v}_amd64.deb"
+dpkg -i "bat_${tag_name#v}_amd64.deb"
+rm -f "bat_${tag_name#v}_amd64.deb"
+
+echo 'export BAT_THEME="Solarized (light)"' >> ~/.zshrc
+
 # vim config
 curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh
 bash vim.sh

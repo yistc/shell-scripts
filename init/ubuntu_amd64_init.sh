@@ -245,6 +245,14 @@ curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/bott
 bash bottom.sh
 rm bottom.sh
 
+# install bat
+tag_name=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/sharkdp/bat/releases/download/${tag_name}/bat_${tag_name#v}_amd64.deb"
+dpkg -i "bat_${tag_name#v}_amd64.deb"
+rm -f "bat_${tag_name#v}_amd64.deb"
+
+echo 'export BAT_THEME="Solarized (light)"' >> ~/.zshrc
+
 # starship
 curl -LO https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz
 tar zxvf starship-x86_64-unknown-linux-gnu.tar.gz
