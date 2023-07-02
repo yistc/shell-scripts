@@ -86,10 +86,11 @@ ubuntu_install() {
   apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin -y
 
   curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+
   docker-compose -v
 
   # limiting log size
-  cat >/etc/docker/daemon.json << EOF
+  cat > /etc/docker/daemon.json << EOF
   {
     "log-driver": "json-file",
     "log-opts": {
