@@ -78,8 +78,13 @@ alias ll='lsd -lh'
 alias lr='lsd -lR'
 
 # ps
-alias psmem='ps aux --sort=-%mem'
-alias pscpu='ps aux --sort=-%cpu'
+alias psmem='ps aux --sort=%mem'
+alias pscpu='ps aux --sort=%cpu'
+
+# procs
+alias pcs='procs'
+alias pcsmem='procs --sortd mem'
+alias pcscpu='procs --sortd cpu'
 
 # systemctl
 alias sc='systemctl'
@@ -244,6 +249,13 @@ rm -rf "fd-$tag_name-x86_64-unknown-linux-gnu.tar.gz" "fd-$tag_name-x86_64-unkno
 curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/bottom.sh
 bash bottom.sh
 rm bottom.sh
+
+# install procs
+tag_name=$(curl -s https://api.github.com/repos/dalance/procs/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/dalance/procs/releases/download/${tag_name}/procs-${tag_name}-x86_64-linux.zip"
+unzip "procs-${tag_name}-x86_64-linux.zip"
+chmod +x procs
+mv procs /usr/local/bin
 
 # starship
 curl -LO https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz

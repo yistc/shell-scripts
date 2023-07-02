@@ -79,8 +79,13 @@ alias ll='lsd -lh'
 alias lr='lsd -lR'
 
 # ps
-alias psmem='ps aux --sort=-%mem'
-alias pscpu='ps aux --sort=-%cpu'
+alias psmem='ps aux --sort=%mem'
+alias pscpu='ps aux --sort=%cpu'
+
+# procs
+alias pcs='procs'
+alias pcsmem='procs --sortd mem'
+alias pcscpu='procs --sortd cpu'
 
 # systemctl
 alias sc='systemctl'
@@ -259,6 +264,10 @@ dpkg -i "bat_${tag_name#v}_arm64.deb"
 rm -f "bat_${tag_name#v}_arm64.deb"
 
 echo 'export BAT_THEME="Solarized (light)"' >> ~/.zshrc
+
+# install procs
+curl -L https://github.com/yistc/shell-scripts/raw/main/bin/procs_aarch64_v0.14 -o /usr/local/bin/procs
+chmod +x /usr/local/bin/procs
 
 # install zoxide
 tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
