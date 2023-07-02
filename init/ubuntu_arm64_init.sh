@@ -231,7 +231,7 @@ curl -LO "https://github.com/lsd-rs/lsd/releases/download/$tag_name/lsd-$tag_nam
 tar zxvf "lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
 mv "lsd-$tag_name-aarch64-unknown-linux-gnu/lsd" /usr/local/bin
 chmod +x /usr/local/bin/lsd
-rm -rf "lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "lsd-$tag_name-x86_64-unknown-linux-gnu"
+rm -rf "lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "lsd-$tag_name-aarch64-unknown-linux-gnu"
 
 # lsd theme
 curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/lsd_theme.sh
