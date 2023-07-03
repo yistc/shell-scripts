@@ -51,12 +51,6 @@ _exit() {
     exit 1
 }
 
-# uninstall previous versions
-apt remove docker docker-doc podman-docker docker-engine docker.io containerd runc
-
-apt update -y
-apt install -y apt-transport-https ca-certificates gnupg lsb-release
-
 debian_install() {
 apt remove docker docker-engine docker.io containerd runc
 
