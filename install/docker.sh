@@ -126,12 +126,12 @@ EOF
 # install docker
 # if centos, warn user and exit 1
 
-if [[ $DISTRO == 'CentOS' ]]; then
+if [[ $DISTRO == 'centos' ]]; then
     echo -e "${RED}CentOS is not supported!${NC}"
     exit 1
-elif [[ $DISTRO == 'Debian' ]]; then
+elif [[ $DISTRO == 'debian' ]]; then
     debian_install
-elif [[ $DISTRO == 'Ubuntu' ]]; then
+elif [[ $DISTRO == 'ubuntu' ]]; then
     ubuntu_install
 else
     echo -e "${RED}Unknown distro!${NC}"
