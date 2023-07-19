@@ -23,11 +23,12 @@ NC='\033[0m' # No Color
 # ask for server hostname
 # if leave blank, do not change
 echo -e "${GREEN}Please enter new hostname: (Leave blank to skip)${NC}"
-read hostname
-if [[ -n ${hostname} ]]; then
-    hostnamectl set-hostname $hostname
+read user_hostname
+if [[ -n ${user_hostname} ]]; then
+    hostnamectl set-hostname $user_hostname
     echo "127.0.0.1 localhost" > /etc/hosts
-    echo "127.0.0.1 $hostname" >> /etc/hosts
+    echo "127.0.0.1 $user_hostname" >> /etc/hosts
+    echo "$user_hostname" > /etc/hostname
 fi
 
 # ipv4 precedence over ipv6
