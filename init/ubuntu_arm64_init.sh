@@ -35,8 +35,13 @@ fi
 sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
 
 # dns
+systemctl stop systemd-resolved
+systemctl disable systemd-resolved
+rm -rf /etc/resolv.conf
+echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 echo 'nameserver 1.1.1.1' >> /etc/resolv.conf
 echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
+chattr +i /etc/resolv.conf
 
 # bbr
 cat >>/etc/sysctl.conf<<EOF
