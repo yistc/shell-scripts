@@ -287,6 +287,20 @@ rm vim.sh
 
 # locale
 
+# Swap
+SWAP=$(free | grep Swap | awk '{print $2}')
+
+if [ "$SWAP" -gt 0 ]; then
+    echo "Swap is enabled."
+else
+    echo -e "${GREEN}Swap is not enabled. Setting up swap ..${NC}"
+    fallocate -l 1G /var/swapfile
+    chmod 600 /var/swapfile
+    mkswap /var/swapfile
+    swapon /var/swapfile
+    echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab
+fi
+
 # clean up
 rm init.sh
 rm debian_amd64_init.sh
