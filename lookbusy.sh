@@ -1,6 +1,5 @@
 #! /bin/bash
 
-apt -y update
 apt -y install curl build-essential
 git clone https://github.com/yistc/lookbusy /opt/lookbusy
 cd /opt/lookbusy
