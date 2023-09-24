@@ -10,6 +10,10 @@ make install
 
 rm -rf /opt/lookbusy
 
+# ask user how much cpu to use
+echo "How much cpu do you want to use? (e.g. 25, 50, 75)"
+read cpu
+
 # ask user how much memory to use
 echo "How much memory do you want to use? (e.g. 512MB, 1GB, 2GB)"
 read memory
@@ -20,7 +24,7 @@ Description=lookbusy service
  
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/lookbusy -c 25 -m $memory
+ExecStart=/usr/local/bin/lookbusy -c $cpu -m $memory
 Restart=always
 RestartSec=10
 KillSignal=SIGINT
