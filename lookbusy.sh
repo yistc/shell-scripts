@@ -35,7 +35,7 @@ Description=lookbusy service
  
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/lookbusy -m $memory
+ExecStart=/usr/local/bin/lookbusy -c 1 -m $memory
 Restart=always
 RestartSec=10
 KillSignal=SIGINT
