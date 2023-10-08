@@ -12,12 +12,12 @@ rm -rf /opt/lookbusy
 
 # ask user how much cpu to use
 # default to 20
-echo "How much cpu do you want to use? (default 20)"
-read cpu
-if [ -z "$cpu" ]
-then
-    cpu=20
-fi
+# echo "How much cpu do you want to use? (default 20)"
+# read cpu
+# if [ -z "$cpu" ]
+# then
+#     cpu=20
+# fi
 
 # ask user how much memory to use
 # default 400MB
@@ -35,7 +35,7 @@ Description=lookbusy service
  
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/lookbusy -c $cpu -m $memory
+ExecStart=/usr/local/bin/lookbusy -m $memory
 Restart=always
 RestartSec=10
 KillSignal=SIGINT
