@@ -1,13 +1,13 @@
 #! /bin/bash
 
 # lsd theme
-mkdir -p /root/.config/lsd/themes
+mkdir -p /root/.config/lsd
 cat > /root/.config/lsd/config.yaml << EOF
 color:
-  theme: yistc
+  theme: custom
 EOF
 
-cat > /root/.config/lsd/themes/yistc.yaml << EOF
+cat > /root/.config/lsd/colors.yaml << EOF
 user: 135
 group: 214
 permission:
