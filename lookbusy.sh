@@ -1,5 +1,11 @@
 #! /bin/bash
 
+# check for gcc or clang, if no, exit 
+if ! [ -x "$(command -v gcc)" ] && ! [ -x "$(command -v clang)" ]; then
+  echo 'Error: gcc or clang is not installed.' >&2
+  exit 1
+fi
+
 apt -y install curl build-essential
 git clone https://github.com/yistc/lookbusy /opt/lookbusy
 cd /opt/lookbusy
@@ -7,6 +13,8 @@ chmod a+x configure
 ./configure
 make
 make install
+
+cd ~
 
 rm -rf /opt/lookbusy
 
