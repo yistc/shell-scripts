@@ -57,5 +57,11 @@ EOF
 systemctl daemon-reload
 systemctl enable stls --now
 
+# cron to restart every day at 04:00
+crontab -l > mycron
+echo "0 4 * * * systemctl restart stls" >> mycron
+crontab mycron
+rm mycron
+
 echo -e "${GREEN}Password: $PASS${NC}"
 rm -f stls.sh
