@@ -65,7 +65,7 @@ EOF
 
 # cron to restart snell every 12 hours
 crontab -l > mycron
-echo "0 */12 * * * systemctl restart snell" >> mycron
+echo "0 5 * * * systemctl restart snell" >> mycron
 crontab mycron
 rm mycron
 
