@@ -140,6 +140,11 @@ EOF
 }
 
 debian_install() {
+
+echo -e "${GREEN}Installing Nginx...${NC}"
+# show distro
+echo -e "${GREEN}Distro: ${DISTRO}${NC}"
+
 systemctl stop nginx
 apt remove nginx -y
 apt update -y && apt upgrade -y
@@ -167,6 +172,10 @@ default_conf
 }
 
 ubuntu_install() {
+
+echo -e "${GREEN}Installing Nginx...${NC}"
+# show distro
+echo -e "${GREEN}Distro: ${DISTRO}${NC}"
     release=$(lsb_release -cs)
     curl -fSsL https://nginx.org/keys/nginx_signing.key | sudo gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
     # verify
