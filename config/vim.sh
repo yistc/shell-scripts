@@ -1,6 +1,6 @@
 #! /bin/bash
 
-cat >>~/.vimrc<<EOF
+cat >~/.vimrc<<EOF
 " 在底部显示，当前处于命令模式还是插入模式
 set showmode
 "在屏幕右下角显示未完成的指令输入
