@@ -201,3 +201,13 @@ EOF
 example_conf
 default_conf
 }
+
+# run install script
+if [[ $DISTRO = "debian" ]]; then
+    debian_install
+elif [[ $DISTRO = "ubuntu" ]]; then
+    ubuntu_install
+else
+    echo -e "${RED}Error: This script only supports Debian/Ubuntu!${NC}"
+    exit 1
+fi
