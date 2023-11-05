@@ -120,6 +120,52 @@ server {
 EOF
 }
 
+port_reuse_template() {
+cat >> /etc/nginx/nginx.conf <<EOF
+stream {
+    map \$ssl_preread_server_name \$name {
+        1.your.domain service1;
+    }
+    upstream service1 {
+        server 127.0.0.1:10001;
+    }
+
+    server {
+        listen 443 reuseport;
+        proxy_pass      \$name;
+        ssl_preread on;               # enalbe ssl_preread
+    }
+}
+EOF
+}
+
+debian_install() {
+systemctl stop nginx
+apt remove nginx -y
+apt update -y && apt upgrade -y
+apt install sudo curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
+
+curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
+| sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+
+gpg --dry-run --quiet --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+http://nginx.org/packages/debian `lsb_release -cs` nginx" \
+| sudo tee /etc/apt/sources.list.d/nginx.list
+
+echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
+| sudo tee /etc/apt/preferences.d/99nginx
+apt update && apt install nginx -y
+mkdir -p /etc/nginx/certs
+openssl dhparam -out /etc/nginx/dhparam.pem 2048
+
+port_reuse_template
+example_conf
+default_conf
+
+}
+
 ubuntu_install() {
     release=$(lsb_release -cs)
     curl -fSsL https://nginx.org/keys/nginx_signing.key | sudo gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
