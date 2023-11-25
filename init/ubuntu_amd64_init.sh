@@ -285,8 +285,7 @@ dpkg -i "zoxide_${tag_name#v}_amd64.deb"
 rm "zoxide_${tag_name#v}_amd64.deb"
 
 # vim config
-curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh
-bash vim.sh
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh && bash vim.sh
 rm vim.sh
 
 # locale
