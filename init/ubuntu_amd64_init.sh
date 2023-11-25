@@ -263,6 +263,7 @@ curl -LO "https://github.com/dalance/procs/releases/download/${tag_name}/procs-$
 unzip "procs-${tag_name}-x86_64-linux.zip"
 chmod +x procs
 mv procs /usr/local/bin
+rm -rf "procs-${tag_name}-x86_64-linux.zip"
 
 # install bat
 tag_name=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name|cut -f4 -d "\"")
