@@ -62,7 +62,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo net-tools rsync xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git locales gnupg logrotate -y
+apt install sudo net-tools rsync xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git locales gnupg logrotate python3 -y
 
 # set zsh
 chsh -s `which zsh`
