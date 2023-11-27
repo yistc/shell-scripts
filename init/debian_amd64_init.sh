@@ -56,7 +56,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo net-tools xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh rsync unzip vim ripgrep git gnupg build-essential logrotate -y
+apt install sudo net-tools xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh rsync unzip vim ripgrep git gnupg build-essential logrotate python3 python3-pip -y
 
 # set zsh
 chsh -s `which zsh`
@@ -104,7 +104,6 @@ alias sst='ss -tnlp'
 alias ssu='ss -unlp'
 alias sstg='ss -tnlp | grep'
 alias cronlog='grep CRON /var/log/syslog'
-alias pip='noglob pip'
 # zoxide
 eval "$(zoxide init --no-cmd zsh)"
 # starship
