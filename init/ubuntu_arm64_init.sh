@@ -71,6 +71,8 @@ mkdir -p /root/.zfunc
 
 # aliases
 cat >> ~/.zshrc << 'EOFF'
+# python
+alias python='python3'
 # cd
 alias ..='cd ..'
 alias ...='cd ../..'

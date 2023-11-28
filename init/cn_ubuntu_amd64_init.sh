@@ -57,7 +57,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo net-tools xz-utils rsync lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git locales logrotate -y
+apt install sudo net-tools xz-utils rsync lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git locales logrotate python3 -y
 
 # set zsh
 chsh -s `which zsh`
@@ -66,6 +66,8 @@ mkdir -p /root/.zfunc
 
 # aliases
 cat >> ~/.zshrc << 'EOFF'
+# python
+alias python='python3'
 # cd
 alias ..='cd ..'
 alias ...='cd ../..'
