@@ -220,3 +220,6 @@ else
     echo -e "${RED}Error: This script only supports Debian/Ubuntu!${NC}"
     exit 1
 fi
+
+# delete this script
+rm -f $0
