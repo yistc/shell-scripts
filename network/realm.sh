@@ -25,8 +25,8 @@ EOF
 systemctl daemon-reload
 
 rm realm-x86_64-unknown-linux-gnu.tar.gz
-rm realm.sh
-
+# delete this file
+rm -f $0
 echo "First edit config at /etc/realm/1.toml"
 echo "systemctl enable realm --now"
 echo "systemctl status realm"
