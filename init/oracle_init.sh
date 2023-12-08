@@ -22,7 +22,6 @@ NC='\033[0m' # No Color
 OS=$(uname -s) # Linux, FreeBSD, Darwin
 ARCH=$(uname -m) # x86_64, arm64, aarch64
 # DISTRO=$( ([[ -e "/usr/bin/yum" ]] && echo 'CentOS') || ([[ -e "/usr/bin/apt" ]] && echo 'Debian') || echo 'unknown' )
-GITPROXY='https://ghproxy.com'
 
 # echo distro and arch
 echo -e "${GREEN}Distro: ubuntu, Arch: ${ARCH}${NC}"
@@ -53,15 +52,3 @@ systemctl disable rpcbind.socket
 
 # clear ~/.ssh/authroized_keys
 rm -rf ~/.ssh/authorized_keys
-
-if [[ "$ARCH" == "x86_64" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_amd64_init.sh
-    bash ubuntu_amd64_init.sh
-# if arm64
-elif [[ "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_arm64_init.sh
-    bash ubuntu_arm64_init.sh
-else
-  echo "Not supported"
-  exit 1
-fi
