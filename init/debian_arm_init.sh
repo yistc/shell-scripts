@@ -30,17 +30,12 @@ if [[ -n ${user_hostname} ]]; then
     echo "$user_hostname" > /etc/hostname
 fi
 
-# ipv4 precedence over ipv6
-sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
-
 # dns
-systemctl stop systemd-resolved
-systemctl disable systemd-resolved
-rm -rf /etc/resolv.conf
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
 echo 'nameserver 1.1.1.1' >> /etc/resolv.conf
 echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
-chattr +i /etc/resolv.conf
+
+# ipv4 precedence over ipv6
+sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
 
 # bbr
 cat >>/etc/sysctl.conf<<EOF
@@ -61,7 +56,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo net-tools xz-utils rsync lsb-release ca-certificates dnsutils dpkg mtr-tiny iperf3 pwgen zsh unzip vim ripgrep git locales gnupg logrotate python3 -y
+apt install sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate python3 -y
 
 # set zsh
 chsh -s `which zsh`
@@ -222,23 +217,23 @@ service sshd restart
 
 # nftables & iptables & ufw
 apt remove --auto-remove nftables -y && apt purge nftables -y
-apt install iptables -y
+apt update && apt install iptables -y
 
 # install dust
 tag_name=$(curl -s https://api.github.com/repos/bootandy/dust/releases/latest | grep tag_name|cut -f4 -d "\"")
-curl -LO "https://github.com/bootandy/dust/releases/download/$tag_name/dust-$tag_name-x86_64-unknown-linux-gnu.tar.gz"
-tar zxvf "dust-$tag_name-x86_64-unknown-linux-gnu.tar.gz" "dust-$tag_name-x86_64-unknown-linux-gnu/dust"
-mv "dust-$tag_name-x86_64-unknown-linux-gnu/dust" /usr/local/bin
+curl -LO "https://github.com/bootandy/dust/releases/download/$tag_name/dust-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+tar zxvf "dust-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "dust-$tag_name-aarch64-unknown-linux-gnu/dust"
+mv "dust-$tag_name-aarch64-unknown-linux-gnu/dust" /usr/local/bin
 chmod +x /usr/local/bin/dust
-rm -rf "dust-$tag_name-x86_64-unknown-linux-gnu.tar.gz" "dust-$tag_name-x86_64-unknown-linux-gnu"
+rm -rf "dust-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "dust-$tag_name-aarch64-unknown-linux-gnu"
 
 # install lsd
 tag_name=$(curl -s https://api.github.com/repos/lsd-rs/lsd/releases/latest | grep tag_name|cut -f4 -d "\"")
-curl -LO "https://github.com/lsd-rs/lsd/releases/download/$tag_name/lsd-$tag_name-x86_64-unknown-linux-gnu.tar.gz"
-tar zxvf "lsd-$tag_name-x86_64-unknown-linux-gnu.tar.gz"
-mv "lsd-$tag_name-x86_64-unknown-linux-gnu/lsd" /usr/local/bin
+curl -LO "https://github.com/lsd-rs/lsd/releases/download/$tag_name/lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+tar zxvf "lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+mv "lsd-$tag_name-aarch64-unknown-linux-gnu/lsd" /usr/local/bin
 chmod +x /usr/local/bin/lsd
-rm -rf "lsd-$tag_name-x86_64-unknown-linux-gnu.tar.gz" "lsd-$tag_name-x86_64-unknown-linux-gnu"
+rm -rf "lsd-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "lsd-$tag_name-aarch64-unknown-linux-gnu"
 
 # lsd theme
 curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/lsd_theme.sh
@@ -247,11 +242,11 @@ rm lsd_theme.sh
 
 # install fd, an alternative to `find` written in Rust
 tag_name=$(curl -s https://api.github.com/repos/sharkdp/fd/releases/latest | grep tag_name|cut -f4 -d "\"")
-curl -LO "https://github.com/sharkdp/fd/releases/download/$tag_name/fd-$tag_name-x86_64-unknown-linux-gnu.tar.gz"
-tar zxvf "fd-$tag_name-x86_64-unknown-linux-gnu.tar.gz"
-mv "fd-$tag_name-x86_64-unknown-linux-gnu/fd" /usr/local/bin
+curl -LO "https://github.com/sharkdp/fd/releases/download/$tag_name/fd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+tar zxvf "fd-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
+mv "fd-$tag_name-aarch64-unknown-linux-gnu/fd" /usr/local/bin
 chmod +x /usr/local/bin/fd
-rm -rf "fd-$tag_name-x86_64-unknown-linux-gnu.tar.gz" "fd-$tag_name-x86_64-unknown-linux-gnu"
+rm -rf "fd-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "fd-$tag_name-aarch64-unknown-linux-gnu"
 
 # install bottom
 curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/bottom.sh
@@ -259,41 +254,35 @@ bash bottom.sh
 rm bottom.sh
 
 # install procs
-tag_name=$(curl -s https://api.github.com/repos/dalance/procs/releases/latest | grep tag_name|cut -f4 -d "\"")
-curl -LO "https://github.com/dalance/procs/releases/download/${tag_name}/procs-${tag_name}-x86_64-linux.zip"
-unzip "procs-${tag_name}-x86_64-linux.zip"
-chmod +x procs
-mv procs /usr/local/bin
-rm -rf "procs-${tag_name}-x86_64-linux.zip"
-
-# install bat
-tag_name=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name|cut -f4 -d "\"")
-curl -LO "https://github.com/sharkdp/bat/releases/download/${tag_name}/bat_${tag_name#v}_amd64.deb"
-dpkg -i "bat_${tag_name#v}_amd64.deb"
-rm -f "bat_${tag_name#v}_amd64.deb"
-
-echo 'export BAT_THEME="Solarized (light)"' >> ~/.zshrc
+curl -L https://github.com/yistc/shell-scripts/raw/main/bin/procs_aarch64_v0.14 -o /usr/local/bin/procs
+chmod +x /usr/local/bin/procs
 
 # starship
-curl -LO https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz
-tar zxvf starship-x86_64-unknown-linux-gnu.tar.gz
+curl -LO https://github.com/starship/starship/releases/latest/download/starship-aarch64-unknown-linux-musl.tar.gz
+tar zxvf starship-aarch64-unknown-linux-musl.tar.gz
 mv starship /usr/local/bin/starship
-rm starship-x86_64-unknown-linux-gnu.tar.gz
+rm starship-aarch64-unknown-linux-musl.tar.gz
 
 # install zoxide
 tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
-curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}_amd64.deb"
-dpkg -i "zoxide_${tag_name#v}_amd64.deb"
-rm "zoxide_${tag_name#v}_amd64.deb"
+curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}_arm64.deb"
+dpkg -i "zoxide_${tag_name#v}_arm64.deb"
+rm "zoxide_${tag_name#v}_arm64.deb"
+
+# install bat
+tag_name=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/sharkdp/bat/releases/download/${tag_name}/bat_${tag_name#v}_arm64.deb"
+dpkg -i "bat_${tag_name#v}_arm64.deb"
+rm -f "bat_${tag_name#v}_arm64.deb"
+
+echo 'export BAT_THEME="Solarized (light)"' >> ~/.zshrc
 
 # vim config
-curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh && bash vim.sh
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh
+bash vim.sh
 rm vim.sh
 
 # locale
-sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
-locale-gen
-update-locale LANG=en_US.UTF-8
 
 # Swap
 SWAP=$(free | grep Swap | awk '{print $2}')
@@ -311,7 +300,6 @@ fi
 
 # clean up
 rm init.sh
-rm ubuntu_amd64_init.sh
-rm oracle_init.sh
+rm debian_amd64_init.sh
 
 reboot

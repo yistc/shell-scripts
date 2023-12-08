@@ -203,7 +203,7 @@ EOFF
 
 # Set timezone
 timedatectl set-timezone Asia/Hong_Kong
-cat 'Asia/Hong_Kong' > /etc/timezone
+echo "Asia/Hong_Kong" > /etc/timezone
 
 sed -i 's/^#\?Storage=.*/Storage=volatile/' /etc/systemd/journald.conf
 sed -i 's/^#\?SystemMaxUse=.*/SystemMaxUse=8M/' /etc/systemd/journald.conf
