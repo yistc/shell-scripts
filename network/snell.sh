@@ -56,8 +56,8 @@ LimitNPROC=102400
 LimitAS=infinity
 LimitCORE=infinity
 ExecStart=/usr/local/bin/snell -c /etc/snell/snell.conf
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=journal
+StandardError=journal
 SyslogIdentifier=snell-server
 [Install]
 WantedBy=multi-user.target

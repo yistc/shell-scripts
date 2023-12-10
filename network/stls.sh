@@ -46,8 +46,8 @@ Wants=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/stls --fastopen --v3 server --listen 0.0.0.0:$PROXY_PORT --server 127.0.0.1:$SNELL_PORT --tls gateway.icloud.com --password $PASS
-StandardOutput=syslog
-StandardError=syslog
+StandardOutput=journal
+StandardError=journal
 SyslogIdentifier=stls
 
 [Install]
