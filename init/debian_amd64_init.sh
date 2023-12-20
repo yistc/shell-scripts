@@ -56,7 +56,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync zip unzip vim ripgrep git gnupg build-essential logrotate python3 -y
+apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync zip unzip vim ripgrep git gnupg build-essential logrotate python3 -y
 
 # set zsh
 chsh -s `which zsh`
