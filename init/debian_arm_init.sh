@@ -298,8 +298,6 @@ else
     echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab
 fi
 
-# clean up
-rm init.sh
-rm debian_amd64_init.sh
-
+# rm self
+rm -f $0
 reboot
