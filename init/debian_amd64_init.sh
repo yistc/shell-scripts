@@ -94,6 +94,8 @@ alias sc='systemctl'
 alias sce='systemctl enable --now'
 alias scr='systemctl restart'
 alias scs='systemctl stop'
+alias sclist='systemctl list-units --type=service'
+
 # abbr
 alias dc='docker-compose'
 alias myip='curl -s http://checkip.amazonaws.com/'
