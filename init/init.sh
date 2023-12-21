@@ -71,11 +71,11 @@ if [[ "$ARCH" == "x86_64" ]]; then
     exit 1
   fi
 # if arm64
-elif [[ "$ARCH" == "arm64" ]]; then
+elif [[ "$ARCH" == "arm64" ]] || [[ "$ARCH" == "aarch64" ]]; then
   # if debian
   if [[ "$DISTRO" == "debian" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_arm64_init.sh
-    bash debian_arm64_init.sh
+    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_arm_init.sh
+    bash debian_arm_init.sh
   # if ubuntu
   elif [[ "$DISTRO" == "ubuntu" ]]; then
     curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_arm64_init.sh
