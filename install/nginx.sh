@@ -70,7 +70,7 @@ server {
     
     client_max_body_size 2G;
 
-    ssl_dhparam /etc/nginx/dhparam.pem;
+    # ssl_dhparam /etc/nginx/dhparam.pem;
 
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
@@ -161,9 +161,10 @@ http://nginx.org/packages/debian `lsb_release -cs` nginx" \
 
 echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
 | sudo tee /etc/apt/preferences.d/99nginx
+
 apt update && apt install nginx -y
 mkdir -p /etc/nginx/certs
-openssl dhparam -out /etc/nginx/dhparam.pem 2048
+# openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
 port_reuse_template
 example_conf
