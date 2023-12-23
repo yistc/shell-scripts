@@ -94,3 +94,6 @@ ufw allow from $server_id to any port 9100
 
 systemctl daemon-reload
 systemctl enable --now node_exporter
+
+# remove this script
+rm -f $0
