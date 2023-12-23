@@ -64,7 +64,9 @@ chsh -s `which zsh`
 mkdir -p /root/.zfunc
 
 # zshrc
-
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/init_zshrc.sh
+bash init_zshrc.sh
+rm init_zshrc.sh
 
 # Set timezone
 timedatectl set-timezone Asia/Hong_Kong

@@ -46,7 +46,7 @@ alias z='__zoxide_z'
 alias sst='ss -tnlp'
 alias ssu='ss -unlp'
 alias sstg='ss -tnlp | grep'
-alias cronlog='grep CRON /var/log/syslog'
+
 # zoxide
 eval "$(zoxide init --no-cmd zsh)"
 # starship
