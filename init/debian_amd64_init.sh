@@ -96,6 +96,7 @@ apt install ufw -y
 ufw allow ssh
 ufw allow 80
 ufw allow 443
+echo "y" | ufw enable
 
 # install dust
 tag_name=$(curl -s https://api.github.com/repos/bootandy/dust/releases/latest | grep tag_name|cut -f4 -d "\"")
