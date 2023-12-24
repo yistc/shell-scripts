@@ -92,12 +92,6 @@ service sshd restart
 apt remove --auto-remove nftables -y && apt purge nftables -y
 apt update && apt install iptables -y
 
-apt install ufw -y
-ufw allow ssh
-ufw allow 80
-ufw allow 443
-echo "y" | ufw enable
-
 # install dust
 tag_name=$(curl -s https://api.github.com/repos/bootandy/dust/releases/latest | grep tag_name|cut -f4 -d "\"")
 curl -LO "https://github.com/bootandy/dust/releases/download/$tag_name/dust-$tag_name-aarch64-unknown-linux-gnu.tar.gz"
