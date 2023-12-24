@@ -90,7 +90,7 @@ WantedBy=multi-user.target
 EOF
 
 # ufw allow 9100 only from server
-ufw allow out to $server_id port 9100
+ufw allow from $server_id to any port 9100
 
 systemctl daemon-reload
 systemctl enable --now node_exporter
