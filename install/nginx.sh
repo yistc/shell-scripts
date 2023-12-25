@@ -16,7 +16,6 @@ NC='\033[0m' # No Color
 
 OS=$(uname -s) # Linux, FreeBSD, Darwin
 ARCH=$(uname -m) # x86_64, arm64, aarch64
-GITPROXY='https://ghproxy.com'
 
 # check linux release
 # 通过 /etc/os-release 文件判断发行版
