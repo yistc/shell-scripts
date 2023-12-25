@@ -119,26 +119,6 @@ server {
 EOF
 }
 
-port_reuse_template() {
-cat >> /etc/nginx/nginx.conf <<EOF
-stream {
-    map \$ssl_preread_server_name \$name {
-        1.your.domain service1;
-    }
-    upstream service1 {
-        server 127.0.0.1:10001;
-    }
-
-    server {
-        listen 443 reuseport;
-        proxy_pass      \$name;
-        ssl_preread on;               # enalbe ssl_preread
-    }
-}
-EOF
-}
-
-debian_install() {
 
 echo -e "${GREEN}Installing Nginx...${NC}"
 # show distro
@@ -165,61 +145,11 @@ apt update && apt install nginx -y
 mkdir -p /etc/nginx/certs
 # openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
-port_reuse_template
 example_conf
 default_conf
 
-}
-
-ubuntu_install() {
-
-echo -e "${GREEN}Installing Nginx...${NC}"
-# show distro
-echo -e "${GREEN}Distro: ${DISTRO}${NC}"
-    release=$(lsb_release -cs)
-    curl -fSsL https://nginx.org/keys/nginx_signing.key | sudo gpg --dearmor | sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
-    # verify
-    gpg --dry-run --quiet --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
-    # stable version
-    echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
-
-    # prefer nginx from nginx.org
-    echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" | sudo tee /etc/apt/preferences.d/99nginx
-
-    apt update -y
-    apt install nginx -y
-
-    cat >> /etc/nginx/nginx.conf <<EOF
-stream {
-    map \$ssl_preread_server_name \$name {
-        1.your.domain service1;
-    }
-    upstream service1 {
-        server 127.0.0.1:10001;
-    }
-
-    server {
-        listen 443 reuseport;
-        proxy_pass      \$name;
-        ssl_preread on;               # enalbe ssl_preread
-    }
-}
-EOF
-
-# example
-example_conf
-default_conf
-}
-
-# run install script
-if [[ $DISTRO = "debian" ]]; then
-    debian_install
-elif [[ $DISTRO = "ubuntu" ]]; then
-    ubuntu_install
-else
-    echo -e "${RED}Error: This script only supports Debian/Ubuntu!${NC}"
-    exit 1
-fi
+rm -f /etc/nginx/nginx.conf
+curl -L https://raw.githubusercontent.com/yistc/shell-scripts/main/install/nginx_conf.conf -o /etc/nginx/nginx.conf
 
 # delete this script
 rm -f $0
