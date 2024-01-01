@@ -311,5 +311,3 @@ fi
 rm init.sh
 rm ubuntu_arm64_init.sh
 rm oracle_init.sh
-
-reboot

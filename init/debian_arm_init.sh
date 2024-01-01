@@ -179,4 +179,3 @@ fi
 
 # rm self
 rm -f $0
-reboot
