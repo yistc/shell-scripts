@@ -64,6 +64,7 @@ server {
     ssl_certificate /etc/nginx/certs/your.domain.cer;
     ssl_certificate_key /etc/nginx/certs/your.domain.key;
     ssl_session_timeout 1d;
+    ssl_reject_handshake on;
     ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
     ssl_session_tickets off;
     
