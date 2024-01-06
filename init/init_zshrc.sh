@@ -26,7 +26,7 @@ alias pcsmem='procs --sortd mem'
 alias pcscpu='procs --sortd cpu'
 
 # ufw
-alias ufws='ufw status numbered'
+alias ufws='ufw status verbose numbered'
 
 # systemctl
 alias sc='systemctl'
