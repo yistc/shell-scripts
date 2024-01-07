@@ -95,8 +95,6 @@ apt update && apt install iptables -y
 
 apt install ufw -y
 ufw allow ssh
-ufw allow 80
-ufw allow 443
 echo "y" | ufw enable
 
 # install dust
