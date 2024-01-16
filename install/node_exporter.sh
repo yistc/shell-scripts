@@ -96,4 +96,4 @@ systemctl daemon-reload
 systemctl enable --now node_exporter
 
 # remove this script
-rm -f $0
+rm -f node_exporter.sh
