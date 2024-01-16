@@ -140,6 +140,13 @@ tar zxvf starship-aarch64-unknown-linux-musl.tar.gz
 mv starship /usr/local/bin/starship
 rm starship-aarch64-unknown-linux-musl.tar.gz
 
+
+mkdir -p ~/.config && touch ~/.config/starship.toml
+
+cat >>~/.config/starship.toml<<EOF
+[hostname]
+ssh_symbol=''
+EOF
 # install zoxide
 tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
 curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}_arm64.deb"
