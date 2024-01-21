@@ -43,10 +43,10 @@ echo 'command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.
 echo 'eval "$(pyenv init -)"' >> ~/.zlogin
 
 # pyenv virtualenv plugin
-git clone https://github.com/pyenv/pyenv-virtualenv.git /usr/local/bin/pyenv/plugins/pyenv-virtualenv
-echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+# git clone https://github.com/pyenv/pyenv-virtualenv.git /usr/local/bin/pyenv/plugins/pyenv-virtualenv
+# echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
 
-# pyenv update plugin
+# pyenv plugin for self update
 git clone https://github.com/pyenv/pyenv-update.git /usr/local/bin/pyenv/plugins/pyenv-update
 
 export PYENV_ROOT="/usr/local/bin/pyenv"
