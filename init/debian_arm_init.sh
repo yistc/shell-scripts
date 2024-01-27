@@ -30,10 +30,6 @@ if [[ -n ${user_hostname} ]]; then
     echo "$user_hostname" > /etc/hostname
 fi
 
-# dns
-echo 'nameserver 1.1.1.1' >> /etc/resolv.conf
-echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
-
 # ipv4 precedence over ipv6
 sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
 
@@ -56,7 +52,20 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate python3 -y
+apt install sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate python3 resolvconf -y
+
+# dns
+sed -i 's/dns-nameservers 8.8.8.8.*/#dns-nameservers 8.8.8.8 1.1.1.1/g' /etc/network/interfaces
+sed -i 's/dns-nameservers 2001:4860:4860::8888.*/#dns-nameservers 2001:4860:4860::8888 2606:4700:4700::1111/g' /etc/network/interfaces
+
+
+cat >> /etc/resolvconf/resolv.conf.d/head << EOF
+nameserver 8.8.8.8
+nameserver 1.1.1.1
+nameserver 8.8.4.4
+nameserver 2001:4860:4860::8888
+nameserver 2606:4700:4700::1111
+EOF
 
 # set zsh
 chsh -s `which zsh`
