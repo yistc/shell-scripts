@@ -55,17 +55,36 @@ apt update -y
 apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync zip unzip vim ripgrep git gnupg build-essential logrotate python3 resolvconf -y
 
 # dns
-sed -i 's/dns-nameservers 8.8.8.8.*/#dns-nameservers 8.8.8.8 1.1.1.1/g' /etc/network/interfaces
-sed -i 's/dns-nameservers 2001:4860:4860::8888.*/#dns-nameservers 2001:4860:4860::8888 2606:4700:4700::1111/g' /etc/network/interfaces
+# sed -i 's/dns-nameservers 8.8.8.8.*/#dns-nameservers 8.8.8.8 1.1.1.1/g' /etc/network/interfaces
+# sed -i 's/dns-nameservers 2001:4860:4860::8888.*/#dns-nameservers 2001:4860:4860::8888 2606:4700:4700::1111/g' /etc/network/interfaces
 
+resolvconf -u
+# nameserver 8.8.8.8
+# nameserver 1.1.1.1
+# nameserver 8.8.4.4
+# nameserver 2001:4860:4860::8888
+# nameserver 2606:4700:4700::1111
 
-cat >> /etc/resolvconf/resolv.conf.d/head << EOF
-nameserver 8.8.8.8
-nameserver 1.1.1.1
-nameserver 8.8.4.4
-nameserver 2001:4860:4860::8888
-nameserver 2606:4700:4700::1111
-EOF
+# check if /etc/resolv.conf contains each nameserver
+# if it does, continue
+# if not, add it to /etc/resolvconf/resolv.conf.d/tail
+
+DNS_SERVERS=(
+    "8.8.8.8"
+    "1.1.1.1"
+    "8.8.4.4"
+    "2001:4860:4860::8888"
+    "2606:4700:4700::1111"
+)
+
+for server in "${DNS_SERVERS[@]}"; do
+    if grep -q "^nameserver $server" /etc/resolv.conf; then
+        echo "Nameserver $server exists in /etc/resolv.conf."
+    else
+        echo "Nameserver $server missing in /etc/resolv.conf. Adding to /etc/resolvconf/resolv.conf.d/tail."
+        echo "nameserver $server" >> /etc/resolvconf/resolv.conf.d/tail
+    fi
+done
 
 resolvconf -u
 
