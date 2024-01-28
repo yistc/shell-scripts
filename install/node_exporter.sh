@@ -53,6 +53,8 @@ TAR_NAME="node_exporter-${tag_name#v}.linux-${ARCH_NAME}.tar.gz"
 curl -LO "https://github.com/prometheus/node_exporter/releases/download/$tag_name/$TAR_NAME"
 tar xvfz $TAR_NAME
 
+rm -f $TAR_NAME
+
 # mv node_exporter-1.7.0.linux-amd64/node_exporter to /usr/local/bin
 mv node_exporter-${tag_name#v}.linux-${ARCH_NAME}/node_exporter /usr/local/bin
 chmod +x /usr/local/bin/node_exporter
@@ -96,4 +98,4 @@ systemctl daemon-reload
 systemctl enable --now node_exporter
 
 # remove this script
-rm -f node_exporter.sh
+rm -f $0
