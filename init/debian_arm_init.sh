@@ -179,9 +179,9 @@ ssh_symbol=''
 EOF
 # install zoxide
 tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
-curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}_arm64.deb"
-dpkg -i "zoxide_${tag_name#v}_arm64.deb"
-rm "zoxide_${tag_name#v}_arm64.deb"
+curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}-1_arm64.deb"
+dpkg -i "zoxide_${tag_name#v}-1_arm64.deb"
+rm "zoxide_${tag_name#v}-1_arm64.deb"
 
 # install bat
 tag_name=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name|cut -f4 -d "\"")
