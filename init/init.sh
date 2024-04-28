@@ -88,3 +88,5 @@ else
   echo "Not supported"
   exit 1
 fi
+
+rm init.sh
