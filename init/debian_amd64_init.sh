@@ -169,6 +169,7 @@ chmod +x procs
 mv procs /usr/local/bin
 rm -rf "procs-${tag_name}-x86_64-linux.zip"
 
+
 # starship
 curl -LO https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz
 tar zxvf starship-x86_64-unknown-linux-gnu.tar.gz
