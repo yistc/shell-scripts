@@ -155,10 +155,10 @@ mv "fd-$tag_name-aarch64-unknown-linux-gnu/fd" /usr/local/bin
 chmod +x /usr/local/bin/fd
 rm -rf "fd-$tag_name-aarch64-unknown-linux-gnu.tar.gz" "fd-$tag_name-aarch64-unknown-linux-gnu"
 
-# install bottom
-curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/bottom.sh
-bash bottom.sh
-rm bottom.sh
+# install btop
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/btop.sh
+bash btop.sh
+rm btop.sh
 
 # install procs
 curl -L https://github.com/yistc/shell-scripts/raw/main/bin/procs_aarch64_v0.14 -o /usr/local/bin/procs
