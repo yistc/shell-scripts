@@ -169,13 +169,11 @@ chmod +x procs
 mv procs /usr/local/bin
 rm -rf "procs-${tag_name}-x86_64-linux.zip"
 
-
 # starship
 curl -LO https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz
 tar zxvf starship-x86_64-unknown-linux-gnu.tar.gz
 mv starship /usr/local/bin/starship
 rm starship-x86_64-unknown-linux-gnu.tar.gz
-
 
 mkdir -p ~/.config && touch ~/.config/starship.toml
 
@@ -183,7 +181,6 @@ cat >>~/.config/starship.toml<<EOF
 [hostname]
 ssh_symbol=''
 EOF
-
 
 # install zoxide
 tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
@@ -221,5 +218,5 @@ else
 fi
 
 # clean up
-rm init.sh
+# rm init.sh
 rm -f $0
