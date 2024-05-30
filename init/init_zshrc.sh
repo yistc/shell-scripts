@@ -1,8 +1,7 @@
 #! /bin/bash
 
 cat >> ~/.zshrc << 'EOFF'
-# python
-alias python='python3'
+alias psqll='sudo -i -u postgres psql'
 # cd
 alias ..='cd ..'
 alias ...='cd ../..'
