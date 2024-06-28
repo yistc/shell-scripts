@@ -59,7 +59,8 @@ server {
 }
 
 server {
-    listen 127.0.0.1:10001 ssl http2;
+    listen 127.0.0.1:10001 ssl;
+    http2 on;
 
     ssl_certificate /etc/nginx/certs/your.domain.cer;
     ssl_certificate_key /etc/nginx/certs/your.domain.key;
