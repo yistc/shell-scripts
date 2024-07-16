@@ -32,7 +32,7 @@ fi
 mkdir -p /etc/snell
 
 # psk and port
-PSK=$(openssl rand -base64 32 | sed 's/[^a-z  A-Z 0-9]//g')
+PSK=$(openssl rand -base64 24 | sed 's/[^a-z  A-Z 0-9]//g')
 
 echo -n "${PURPLE}Enter port for snell:${NC}"
 read PORT
