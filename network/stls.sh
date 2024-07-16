@@ -29,7 +29,7 @@ curl -LO https://github.com/ihciah/shadow-tls/releases/download/v0.2.23/shadow-t
 mv shadow-tls-x86_64-unknown-linux-musl /usr/local/bin/stls
 chmod +x /usr/local/bin/stls
 
-PASS=$(openssl rand -base64 32 | sed 's/[^a-z  A-Z 0-9]//g')
+PASS=$(openssl rand -base64 24 | sed 's/[^a-z  A-Z 0-9]//g')
 echo -ne "${PURPLE}Which port is snell listening?${NC}"
 read SNELL_PORT
 
