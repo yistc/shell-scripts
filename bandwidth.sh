@@ -58,7 +58,7 @@ TEST_FILES_ALL=(
 
 TEST_FILES_JP=(
     http://speedtest.tok02.softlayer.com/downloads/test500.zip
-    http://mirror.tyo10.jp.leaseweb.net/speedtest/1000mb.bin
+    # http://mirror.tyo10.jp.leaseweb.net/speedtest/1000mb.bin
     https://nrt.lg.v.ps/100MB.test
     https://hnd-jp-ping.vultr.com/vultr.com.1000MB.bin
     https://kix.lg.v.ps/100MB.test
