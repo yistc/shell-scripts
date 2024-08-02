@@ -61,6 +61,7 @@ chmod +x /usr/local/bin/node_exporter
 
 useradd -m node_exporter
 groupadd node_exporter
+# add node_exporter to node_exporter group
 usermod -a -G node_exporter node_exporter
 
 chown node_exporter:node_exporter /usr/local/bin/node_exporter
