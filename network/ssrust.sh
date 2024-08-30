@@ -19,7 +19,7 @@ tag_name=$(curl -s https://api.github.com/repos/shadowsocks/shadowsocks-rust/rel
 if [[ "$ARCH" == "x86_64" ]]; then
     curl -L "https://github.com/shadowsocks/shadowsocks-rust/releases/download/${tag_name}/shadowsocks-${tag_name}.x86_64-unknown-linux-gnu.tar.xz" -o ssrust.tar.xz
     zip_name="ssrust.tar.xz"
-elif [[ "$ARCH" == "arm64" ]]; then
+elif [[ "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
     curl -L "https://github.com/shadowsocks/shadowsocks-rust/releases/download/${tag_name}/shadowsocks-${tag_name}.aarch64-unknown-linux-gnu.tar.xz" -o ssrust.tar.xz
     zip_name="ssrust.tar.xz"
 else
