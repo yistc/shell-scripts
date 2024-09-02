@@ -14,12 +14,12 @@ NC='\033[0m' # No Color
 ARCH=$(uname -m) # x86_64, arm64, aarch64
 
 if [[ "$ARCH" == "x86_64" ]]; then
-    curl -L https://dl.nssurge.com/snell/snell-server-v4.1.0rc1-linux-amd64.zip -o snell.zip
+    curl -L https://dl.nssurge.com/snell/snell-server-v4.1.0-linux-amd64.zip -o snell.zip
     unzip snell.zip
     chmod +x snell-server && mv snell-server /usr/local/bin/snell
     rm snell.zip
 elif [[ "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
-    curl -L https://dl.nssurge.com/snell/snell-server-v4.1.0rc1-linux-aarch64.zip -o snell.zip
+    curl -L https://dl.nssurge.com/snell/snell-server-v4.1.0-linux-aarch64.zip -o snell.zip
     unzip snell.zip
     chmod +x snell-server && mv snell-server /usr/local/bin/snell
     rm snell.zip
