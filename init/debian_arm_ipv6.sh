@@ -56,7 +56,7 @@ echo "Asia/Hong_Kong" > /etc/timezone
 
 # some basic packages
 apt update -y
-apt install sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate python3 resolvconf -y
+apt install curl sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate python3 resolvconf -y
 
 # dns
 # sed -i 's/dns-nameservers 8.8.8.8.*/#dns-nameservers 8.8.8.8 1.1.1.1/g' /etc/network/interfaces
