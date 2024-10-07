@@ -53,59 +53,59 @@ _exit() {
 example_conf() {
 cat >> /etc/nginx/conf.d/example <<EOF
 server {
-    listen 80;
-    server_name your.domain.com;
-    return 301 https://your.domain.com\$request_uri;
+  listen 80;
+  server_name your.domain.com;
+  return 301 https://your.domain.com\$request_uri;
 }
 
 server {
-    listen 127.0.0.1:10001 ssl;
-    http2 on;
+  listen 127.0.0.1:10001 ssl;
+  http2 on;
 
-    ssl_certificate /etc/nginx/certs/your.domain.cer;
-    ssl_certificate_key /etc/nginx/certs/your.domain.key;
-    ssl_session_timeout 1d;
-    ssl_reject_handshake on;
-    ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
-    ssl_session_tickets off;
-    
-    client_max_body_size 2G;
+  ssl_certificate /etc/nginx/certs/your.domain.cer;
+  ssl_certificate_key /etc/nginx/certs/your.domain.key;
+  ssl_session_timeout 1d;
+  ssl_reject_handshake on;
+  ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
+  ssl_session_tickets off;
+  
+  client_max_body_size 2G;
 
-    # ssl_dhparam /etc/nginx/dhparam.pem;
+  # ssl_dhparam /etc/nginx/dhparam.pem;
 
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
-    ssl_prefer_server_ciphers off;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+  ssl_prefer_server_ciphers off;
 
-    ssl_stapling on;
-    ssl_stapling_verify on;
+  ssl_stapling on;
+  ssl_stapling_verify on;
 
-    resolver 8.8.8.8 1.1.1.1 8.8.4.4 valid=600s;
-    resolver_timeout 10s;
-    
-    location / {
-        proxy_pass http://127.0.0.1:8000;
+  resolver 8.8.8.8 1.1.1.1 8.8.4.4 valid=600s;
+  resolver_timeout 10s;
+  
+  location / {
+    proxy_pass http://127.0.0.1:8000;
 
-        # websocket
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection "Upgrade";
+    # websocket
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade \$http_upgrade;
+    proxy_set_header Connection "Upgrade";
 
-        proxy_set_header Host \$http_host;
+    proxy_set_header Host \$http_host;
 
-        proxy_set_header X-Forwarded-Proto \$scheme;
+    proxy_set_header X-Forwarded-Proto \$scheme;
 
-        proxy_set_header X-Real-IP \$remote_addr;
+    proxy_set_header X-Real-IP \$remote_addr;
 
-        # timeout
-        proxy_connect_timeout 300;
-        proxy_send_timeout 300;
-    	proxy_read_timeout 300;
-    	send_timeout 300;
+    # timeout
+    proxy_connect_timeout 300;
+    proxy_send_timeout 300;
+    proxy_read_timeout 300;
+    send_timeout 300;
 
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
 
-    }
+  }
 
 }
 EOF
