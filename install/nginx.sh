@@ -114,9 +114,9 @@ EOF
 default_conf() {
 cat >/etc/nginx/conf.d/default.conf<<EOF
 server {
-    listen 80 default;
-    server_name _;
-    return 444; # or 500
+  listen 80 default;
+  server_name _;
+  return 444; # or 500
 }
 EOF
 }
