@@ -20,34 +20,34 @@ ARCH=$(uname -m) # x86_64, arm64, aarch64
 # check linux release
 # 通过 /etc/os-release 文件判断发行版
 if [ -f /etc/os-release ]; then
-    source /etc/os-release
-    if [[ $ID = "debian" ]]; then
-        DISTRO="debian"
-    elif [[ $ID = "ubuntu" ]]; then
-        DISTRO="ubuntu"
-    elif [[ $ID = "centos" ]]; then
-        DISTRO="centos"
-    else
-        DISTRO="unknown"
-    fi
+  source /etc/os-release
+  if [[ $ID = "debian" ]]; then
+      DISTRO="debian"
+  elif [[ $ID = "ubuntu" ]]; then
+      DISTRO="ubuntu"
+  elif [[ $ID = "centos" ]]; then
+      DISTRO="centos"
+  else
+      DISTRO="unknown"
+  fi
 # 通过 /etc/*-release 文件判断发行版
 elif [ -f /etc/centos-release ]; then
-    DISTRO="centos"
+  DISTRO="centos"
 elif [ -f /etc/redhat-release ]; then
-    DISTRO="redhat"
+  DISTRO="redhat"
 elif [ -f /etc/fedora-release ]; then
-    DISTRO="fedora"
+  DISTRO="fedora"
 elif [ -f /etc/debian_version ]; then
-    DISTRO="debian"
+  DISTRO="debian"
 elif [ -f /etc/lsb-release ]; then
-    DISTRO="ubuntu"
+  DISTRO="ubuntu"
 else
-    DISTRO="unknown"
+  DISTRO="unknown"
 fi
 
 _exit() {
-    echo -e "${RED}Exiting...${NC}"
-    exit 1
+  echo -e "${RED}Exiting...${NC}"
+  exit 1
 }
 
 example_conf() {
