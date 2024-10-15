@@ -38,10 +38,10 @@ read PORT
 
 cat > /etc/snell/snell.conf <<EOF
 [snell-server]
-listen = 0.0.0.0:$PORT
+listen = ::0:$PORT
 dns = 8.8.8.8, 1.1.1.1, 2001:4860:4860::8888
 psk = $PSK
-ipv6 = false
+ipv6 = true
 EOF
 
 cat > /lib/systemd/system/snell.service << EOF
