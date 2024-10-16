@@ -22,7 +22,37 @@ NC='\033[0m' # No Color
 OS=$(uname -s) # Linux, FreeBSD, Darwin
 ARCH=$(uname -m) # x86_64, arm64, aarch64
 # DISTRO=$( ([[ -e "/usr/bin/yum" ]] && echo 'CentOS') || ([[ -e "/usr/bin/apt" ]] && echo 'Debian') || echo 'unknown' )
-GITPROXY='https://ghproxy.com'
+
+GOOGLE_IPV4_ADDRESS="8.8.8.8"
+GOOGLE_IPV6_ADDRESS="2001:4860:4860::8888"
+ping_ipv4() {
+    ping -4 -c 3 -W 2 "$GOOGLE_IPV4_ADDRESS" > /dev/null 2>&1
+    return $?
+}
+
+ping_ipv6() {
+    ping -6 -c 3 -W 2 "$GOOGLE_IPV6_ADDRESS" > /dev/null 2>&1
+    return $?
+}
+
+# Ping IPv4
+ping_ipv4
+IPV4_STATUS=$?
+
+# Ping IPv6
+ping_ipv6
+IPV6_STATUS=$?
+
+IP_STATUS=""
+if [ $IPV4_STATUS -eq 0 ] && [ $IPV6_STATUS -eq 0 ]; then
+    IP_STATUS="dual"
+elif [ $IPV4_STATUS -eq 0 ] && [ $IPV6_STATUS -ne 0 ]; then
+    IP_STATUS="v4-only"
+elif [ $IPV4_STATUS -ne 0 ] && [ $IPV6_STATUS -eq 0 ]; then
+    IP_STATUS="v6-only"
+else
+    IP_STATUS="none"
+fi
 
 # check linux release
 # 通过 /etc/os-release 文件判断发行版
@@ -74,9 +104,12 @@ if [[ "$ARCH" == "x86_64" ]]; then
 elif [[ "$ARCH" == "arm64" ]] || [[ "$ARCH" == "aarch64" ]]; then
   # if debian
   if [[ "$DISTRO" == "debian" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_arm_init.sh
-    bash debian_arm_init.sh
-  # if ubuntu
+    # if ipv6-only
+    if [[ "$IP_STATUS" == "v6-only" ]]; then
+      curl -L https://raw.githubusercontent.com/yistc/shell-scripts/refs/heads/main/init/debian_arm_ipv6.sh -o debian_arm_init.sh && bash debian_arm_init.sh
+    else
+      curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_arm_init.sh && bash debian_arm_init.sh
+    fi
   elif [[ "$DISTRO" == "ubuntu" ]]; then
     curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_arm64_init.sh
     bash ubuntu_arm64_init.sh
