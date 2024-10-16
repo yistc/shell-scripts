@@ -35,7 +35,7 @@ alias scs='systemctl status'
 alias sclist='systemctl list-units --type=service'
 
 # abbr
-alias dc='docker-compose'
+alias dc='docker compose'
 alias myip='curl -s http://checkip.amazonaws.com/'
 alias myip6='curl ip.sb -6'
 alias tma='tmux attach -t'
