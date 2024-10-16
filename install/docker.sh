@@ -99,15 +99,15 @@ apt update -y
 apt install docker-ce docker-ce-cli containerd.io -y
 docker -v
 
-# download
-if [[ $IP_STATUS == "v6-only" ]]; then
-  curl -x $V4PROXY -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-else
-  curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-fi
+# # docker compose
+# if [[ $IP_STATUS == "v6-only" ]]; then
+#   curl -x $V4PROXY -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+# else
+#   curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+# fi
 
-chmod +x /usr/local/bin/docker-compose
-docker-compose -v
+# chmod +x /usr/local/bin/docker-compose
+# docker-compose -v
 
 # limiting log size
 cat >/etc/docker/daemon.json<<EOF
