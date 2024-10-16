@@ -19,15 +19,35 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 NC='\033[0m' # No Color
 
+# check if file /etc/ssrust/sslocal.json exists, if not exit and print error
+if [ ! -f /etc/ssrust/sslocal ]; then
+    echo -e "${RED}Error: /etc/ssrust/sslocal.json not found!${NC}"
+    exit 1
+fi
+# check if file /usr/local/bin/sslocal exists, if not exit and print error
+if [ ! -f /usr/local/bin/sslocal ]; then
+    echo -e "${RED}Error: /usr/local/bin/sslocal not found!${NC}"
+    exit 1
+fi
+
+# check if http_proxy env is set
+if [ -z "$http_proxy" ]; then
+  echo "http_proxy is not set."
+  exit 1
+else
+  echo "http_proxy is set to: $http_proxy"
+fi
+
+
 # ask for server hostname
 # if leave blank, do not change
 echo -e "${GREEN}Please enter new hostname: (Leave blank to skip)${NC}"
 read user_hostname
 if [[ -n ${user_hostname} ]]; then
-    hostnamectl set-hostname $user_hostname
-    echo "127.0.0.1 localhost" > /etc/hosts
-    echo "127.0.0.1 $user_hostname" >> /etc/hosts
-    echo "$user_hostname" > /etc/hostname
+  hostnamectl set-hostname $user_hostname
+  echo "127.0.0.1 localhost" > /etc/hosts
+  echo "127.0.0.1 $user_hostname" >> /etc/hosts
+  echo "$user_hostname" > /etc/hostname
 fi
 
 # ipv4 precedence over ipv6
@@ -57,6 +77,8 @@ echo "Asia/Hong_Kong" > /etc/timezone
 # some basic packages
 apt update -y
 apt install curl sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate python3 resolvconf -y
+
+# Set up ss local proxy
 
 # dns
 # sed -i 's/dns-nameservers 8.8.8.8.*/#dns-nameservers 8.8.8.8 1.1.1.1/g' /etc/network/interfaces
@@ -98,7 +120,7 @@ chsh -s `which zsh`
 mkdir -p /root/.zfunc
 
 # zshrc
-curl -LO https://gh-proxy.com/https://raw.githubusercontent.com/yistc/shell-scripts/main/init/init_zshrc.sh
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/init_zshrc.sh
 bash init_zshrc.sh
 rm init_zshrc.sh
 
@@ -113,7 +135,7 @@ mkdir -p /root/.ssh
 echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP0kVbDmjFhOtyoli41xVYMqok5zQNWUkYbdHBvVpAb9 yistc' >> ~/.ssh/authorized_keys
 
 # permit root login and disable password login
-curl -o /etc/ssh/sshd_config -L "https://gh-proxy.com/https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ssh.conf"
+curl -o /etc/ssh/sshd_config -L "https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ssh.conf"
 
 service sshd restart
 
@@ -126,38 +148,38 @@ ufw allow ssh
 echo "y" | ufw enable
 
 # install dust
-curl -L "https://gh-proxy.com/https://github.com/bootandy/dust/releases/download/v1.1.1/dust-v1.1.1-aarch64-unknown-linux-gnu.tar.gz" -o dust.tar.gz
+curl -L "https://github.com/bootandy/dust/releases/download/v1.1.1/dust-v1.1.1-aarch64-unknown-linux-gnu.tar.gz" -o dust.tar.gz
 tar zxvf dust.tar.gz "dust-v1.1.1-aarch64-unknown-linux-gnu/dust"
 mv "dust-v1.1.1-aarch64-unknown-linux-gnu/dust" /usr/local/bin
 chmod +x /usr/local/bin/dust
 rm -rf dust.tar.gz "dust-v1.1.1-aarch64-unknown-linux-gnu"
 
 # install lsd
-curl -L "https://gh-proxy.com/https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd-v1.1.5-aarch64-unknown-linux-gnu.tar.gz" -o lsd.tar.gz
+curl -L "https://github.com/lsd-rs/lsd/releases/download/v1.1.5/lsd-v1.1.5-aarch64-unknown-linux-gnu.tar.gz" -o lsd.tar.gz
 tar zxvf lsd.tar.gz lsd-v1.1.5-aarch64-unknown-linux-gnu/lsd
 mv "lsd-v1.1.5-aarch64-unknown-linux-gnu/lsd" /usr/local/bin
 chmod +x /usr/local/bin/lsd
 rm -rf lsd.tar.gz "lsd-v1.1.5-aarch64-unknown-linux-gnu"
 
 # lsd theme
-curl -LO https://gh-proxy.com/https://raw.githubusercontent.com/yistc/shell-scripts/main/config/lsd_theme.sh && bash lsd_theme.sh && rm lsd_theme.sh
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/lsd_theme.sh && bash lsd_theme.sh && rm lsd_theme.sh
 
 # install fd, an alternative to `find` written in Rust
-curl -L https://gh-proxy.com/https://github.com/sharkdp/fd/releases/download/v10.2.0/fd-v10.2.0-aarch64-unknown-linux-gnu.tar.gz -o fd.tar.gz
+curl -L https://github.com/sharkdp/fd/releases/download/v10.2.0/fd-v10.2.0-aarch64-unknown-linux-gnu.tar.gz -o fd.tar.gz
 tar zxvf fd.tar.gz
 mv "fd-v10.2.0-aarch64-unknown-linux-gnu/fd" /usr/local/bin
 chmod +x /usr/local/bin/fd
 rm -rf fd.tar.gz "fd-v10.2.0-aarch64-unknown-linux-gnu"
 
 # install btop
-curl -LO https://gh-proxy.com/https://raw.githubusercontent.com/yistc/shell-scripts/main/install/btop.sh && bash btop.sh && rm btop.sh
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/btop.sh && bash btop.sh && rm btop.sh
 
 # install procs
-curl -L https://gh-proxy.com/https://github.com/yistc/shell-scripts/raw/main/bin/procs_aarch64_v0.14 -o /usr/local/bin/procs
+curl -L https://github.com/yistc/shell-scripts/raw/main/bin/procs_aarch64_v0.14 -o /usr/local/bin/procs
 chmod +x /usr/local/bin/procs
 
 # starship
-curl -L https://gh-proxy.com/https://github.com/starship/starship/releases/latest/download/starship-aarch64-unknown-linux-musl.tar.gz -o starship.tar.gz
+curl -L https://github.com/starship/starship/releases/latest/download/starship-aarch64-unknown-linux-musl.tar.gz -o starship.tar.gz
 tar zxvf starship.tar.gz
 mv starship /usr/local/bin/starship
 rm starship.tar.gz
@@ -170,14 +192,14 @@ ssh_symbol=''
 EOF
 
 # install zoxide
-curl -L https://gh-proxy.com/https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.6/zoxide-0.9.6-aarch64-unknown-linux-musl.tar.gz -o zoxide.tar.gz
+curl -L https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.6/zoxide-0.9.6-aarch64-unknown-linux-musl.tar.gz -o zoxide.tar.gz
 tar zxvf zoxide.tar.gz zoxide
 mv zoxide /usr/local/bin
 chmod +x /usr/local/bin/zoxide
 rm zoxide.tar.gz
 
 # install bat
-curl -L https://gh-proxy.com/https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-v0.24.0-aarch64-unknown-linux-gnu.tar.gz -o bat.tar.gz
+curl -L https://github.com/sharkdp/bat/releases/download/v0.24.0/bat-v0.24.0-aarch64-unknown-linux-gnu.tar.gz -o bat.tar.gz
 tar zxvf bat.tar.gz bat-v0.24.0-aarch64-unknown-linux-gnu/bat
 mv bat-v0.24.0-aarch64-unknown-linux-gnu/bat /usr/local/bin
 chmod +x /usr/local/bin/bat
@@ -186,7 +208,7 @@ rm -rf bat.tar.gz bat-v0.24.0-aarch64-unknown-linux-gnu
 echo 'export BAT_THEME="Solarized (light)"' >> ~/.zshrc
 
 # vim config
-curl -LO https://gh-proxy.com/https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh && bash vim.sh && rm vim.sh
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh && bash vim.sh && rm vim.sh
 
 # locale
 
