@@ -20,14 +20,18 @@ WHITE='\033[0;37m'
 NC='\033[0m' # No Color
 
 # check if file /etc/ssrust/sslocal.json exists, if not exit and print error
-if [ ! -f /etc/ssrust/sslocal ]; then
-    echo -e "${RED}Error: /etc/ssrust/sslocal.json not found!${NC}"
-    exit 1
+if [ -f '/etc/ssrust/sslocal.json' ]; then
+  echo "ssrust config file found."
+else
+  echo -e "${RED}Error: /etc/ssrust/sslocal.json not found!${NC}"
+  exit 1
 fi
 # check if file /usr/local/bin/sslocal exists, if not exit and print error
-if [ ! -f /usr/local/bin/sslocal ]; then
-    echo -e "${RED}Error: /usr/local/bin/sslocal not found!${NC}"
-    exit 1
+if [ -f '/usr/local/bin/sslocal' ]; then
+  echo "sslocal executable found."
+else
+  echo -e "${RED}Error: /usr/local/bin/sslocal not found!${NC}"
+  exit 1
 fi
 
 # check if http_proxy env is set
