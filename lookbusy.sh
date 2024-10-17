@@ -15,8 +15,6 @@ make install
 
 cd ~
 
-rm -rf /opt/lookbusy
-
 # ask user how much cpu to use
 # default to 20
 # echo "How much cpu do you want to use? (default 20)"
@@ -52,3 +50,5 @@ WantedBy=multi-user.target
 EOF
 
 systemctl enable --now lookbusy.service
+
+rm -rf /opt/lookbusy
