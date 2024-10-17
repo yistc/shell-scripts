@@ -6,7 +6,6 @@ if ! [ -x "$(command -v gcc)" ] && ! [ -x "$(command -v clang)" ]; then
   exit 1
 fi
 
-apt -y install curl build-essential
 git clone https://github.com/yistc/lookbusy /opt/lookbusy
 cd /opt/lookbusy
 chmod a+x configure
