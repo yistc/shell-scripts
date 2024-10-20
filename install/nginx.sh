@@ -147,6 +147,8 @@ apt update && apt install nginx -y
 mkdir -p /etc/nginx/certs
 # openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
+cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.original
+
 example_conf
 default_conf
 
