@@ -63,11 +63,11 @@ SyslogIdentifier=snell-server
 WantedBy=multi-user.target
 EOF
 
-# cron to restart snell every 12 hours
-# crontab -l > mycron
-# echo "0 5 * * * systemctl restart snell" >> mycron
-# crontab mycron
-# rm mycron
+# cron to restart snell everyday
+crontab -l > mycron
+echo "0 5 * * * systemctl restart snell" >> mycron
+crontab mycron
+rm mycron
 
 systemctl daemon-reload
 systemctl enable --now snell
