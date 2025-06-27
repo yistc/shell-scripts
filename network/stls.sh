@@ -24,9 +24,20 @@ ARCH=$(uname -m) # x86_64, arm64, aarch64
 # DISTRO=$( ([[ -e "/usr/bin/yum" ]] && echo 'CentOS') || ([[ -e "/usr/bin/apt" ]] && echo 'Debian') || echo 'unknown' )
 GITPROXY='https://ghproxy.com'
 
-tag_name=$(curl -s https://api.github.com/repos/ihciah/shadow-tls/releases/latest | grep tag_name|cut -f4 -d "\"")
-curl -LO https://github.com/ihciah/shadow-tls/releases/download/v0.2.23/shadow-tls-x86_64-unknown-linux-musl
-mv shadow-tls-x86_64-unknown-linux-musl /usr/local/bin/stls
+tag_name=$(curl -s https://api.github.com/repos/ihciah/shadow-tls/releases/latest | grep tag_name | cut -f4 -d '"')
+
+# Determine correct binary for architecture
+if [[ "$ARCH" == "x86_64" ]]; then
+    file="shadow-tls-x86_64-unknown-linux-musl"
+elif [[ "$ARCH" == "arm64" || "$ARCH" == "aarch64" ]]; then
+    file="shadow-tls-aarch64-unknown-linux-musl"
+else
+    echo "Architecture $ARCH not supported"
+    exit 1
+fi
+
+curl -L "https://github.com/ihciah/shadow-tls/releases/download/${tag_name}/${file}" -o "$file"
+mv "$file" /usr/local/bin/stls
 chmod +x /usr/local/bin/stls
 
 PASS=$(openssl rand -base64 24 | sed 's/[^a-z  A-Z 0-9]//g')
