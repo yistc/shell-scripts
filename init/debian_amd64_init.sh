@@ -34,15 +34,15 @@ fi
 sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
 
 # bbr
-cat >>/etc/sysctl.conf<<EOF
-net.core.default_qdisc = fq_pie
+cat >>/etc/sysctl.d/local.conf<<EOF
+net.core.default_qdisc = fq
 net.ipv4.tcp_congestion_control = bbr
 net.ipv4.tcp_rmem = 8192 262144 536870912
 net.ipv4.tcp_wmem = 4096 16384 536870912
 net.ipv4.tcp_adv_win_scale = -2
 net.ipv4.tcp_notsent_lowat = 131072
 EOF
-sysctl -p
+sysctl --system
 
 # timedatectl
 apt purge ntp -y

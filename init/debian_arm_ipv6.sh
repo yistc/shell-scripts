@@ -59,7 +59,7 @@ fi
 
 # bbr
 cat >>/etc/sysctl.conf<<EOF
-net.core.default_qdisc = fq_pie
+net.core.default_qdisc = fq
 net.ipv4.tcp_congestion_control = bbr
 net.ipv4.tcp_rmem = 8192 262144 536870912
 net.ipv4.tcp_wmem = 4096 16384 536870912
