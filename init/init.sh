@@ -5,8 +5,8 @@
 trap _exit INT QUIT TERM
 
 _exit() {
-    echo -e "${RED}Exiting...${NC}"
-    exit 1
+  echo -e "${RED}Exiting...${NC}"
+  exit 1
 }
 
 # Colors for output
@@ -19,107 +19,273 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 NC='\033[0m' # No Color
 
-OS=$(uname -s) # Linux, FreeBSD, Darwin
-ARCH=$(uname -m) # x86_64, arm64, aarch64
-# DISTRO=$( ([[ -e "/usr/bin/yum" ]] && echo 'CentOS') || ([[ -e "/usr/bin/apt" ]] && echo 'Debian') || echo 'unknown' )
-
-GOOGLE_IPV4_ADDRESS="8.8.8.8"
-GOOGLE_IPV6_ADDRESS="2001:4860:4860::8888"
-ping_ipv4() {
-    ping -4 -c 3 -W 2 "$GOOGLE_IPV4_ADDRESS" > /dev/null 2>&1
-    return $?
-}
-
-ping_ipv6() {
-    ping -6 -c 3 -W 2 "$GOOGLE_IPV6_ADDRESS" > /dev/null 2>&1
-    return $?
-}
-
-# Ping IPv4
-ping_ipv4
-IPV4_STATUS=$?
-
-# Ping IPv6
-ping_ipv6
-IPV6_STATUS=$?
-
-IP_STATUS=""
-if [ $IPV4_STATUS -eq 0 ] && [ $IPV6_STATUS -eq 0 ]; then
-    IP_STATUS="dual"
-elif [ $IPV4_STATUS -eq 0 ] && [ $IPV6_STATUS -ne 0 ]; then
-    IP_STATUS="v4-only"
-elif [ $IPV4_STATUS -ne 0 ] && [ $IPV6_STATUS -eq 0 ]; then
-    IP_STATUS="v6-only"
-else
-    IP_STATUS="none"
-fi
-
-# check linux release
-# 通过 /etc/os-release 文件判断发行版
-if [ -f /etc/os-release ]; then
-    source /etc/os-release
-    if [[ $ID = "debian" ]]; then
-        DISTRO="debian"
-    elif [[ $ID = "ubuntu" ]]; then
-        DISTRO="ubuntu"
-    elif [[ $ID = "centos" ]]; then
-        DISTRO="centos"
-    else
-        DISTRO="unknown"
-    fi
-# 通过 /etc/*-release 文件判断发行版
-elif [ -f /etc/centos-release ]; then
-    DISTRO="centos"
-elif [ -f /etc/redhat-release ]; then
-    DISTRO="redhat"
-elif [ -f /etc/fedora-release ]; then
-    DISTRO="fedora"
-elif [ -f /etc/debian_version ]; then
-    DISTRO="debian"
-elif [ -f /etc/lsb-release ]; then
-    DISTRO="ubuntu"
-else
-    DISTRO="unknown"
-fi
-
-# echo distro and arch
-echo -e "${GREEN}Distro: ${DISTRO}, Arch: ${ARCH}${NC}"
-
-# init based on distro and arch
-# if x86_64
-if [[ "$ARCH" == "x86_64" ]]; then
-  # if debian
-  if [[ "$DISTRO" == "debian" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_amd64_init.sh
-    bash debian_amd64_init.sh
-  # if ubuntu
-  elif [[ "$DISTRO" == "ubuntu" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_amd64_init.sh
-    bash ubuntu_amd64_init.sh
+# Detect OS and Architecture
+detect_os() {
+  if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    OS=$ID
+    OS_VERSION=$VERSION_ID
   else
-    echo "Not supported"
+    echo -e "${RED}Error: Cannot detect OS!${NC}"
     exit 1
   fi
-# if arm64
-elif [[ "$ARCH" == "arm64" ]] || [[ "$ARCH" == "aarch64" ]]; then
-  # if debian
-  if [[ "$DISTRO" == "debian" ]]; then
-    # if ipv6-only
-    if [[ "$IP_STATUS" == "v6-only" ]]; then
-      curl -L https://raw.githubusercontent.com/yistc/shell-scripts/refs/heads/main/init/debian_arm_ipv6.sh -o debian_arm_init.sh && bash debian_arm_init.sh
-    else
-      curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/debian_arm_init.sh && bash debian_arm_init.sh
-    fi
-  elif [[ "$DISTRO" == "ubuntu" ]]; then
-    curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ubuntu_arm64_init.sh
-    bash ubuntu_arm64_init.sh
-  else
-    echo "Not supported"
-    exit 1
+
+  ARCH=$(uname -m)
+  case $ARCH in
+    x86_64)
+      ARCH_TYPE="amd64"
+      RUST_ARCH="x86_64"
+      ;;
+    aarch64|arm64)
+      ARCH_TYPE="arm64"
+      RUST_ARCH="aarch64"
+      ;;
+    *)
+      echo -e "${RED}Error: Unsupported architecture: $ARCH${NC}"
+      exit 1
+      ;;
+  esac
+
+  echo -e "${GREEN}Detected OS: $OS $OS_VERSION${NC}"
+  echo -e "${GREEN}Detected Architecture: $ARCH_TYPE ($RUST_ARCH)${NC}"
+}
+
+# Detect IP stack (IPv4, IPv6, or dual)
+detect_ip_stack() {
+  HAS_IPV4=false
+  HAS_IPV6=false
+
+  # Check for IPv4
+  if ip -4 addr show | grep -q "inet.*scope global"; then
+    HAS_IPV4=true
   fi
-else
-  echo "Not supported"
-  exit 1
+
+  # Check for IPv6
+  if ip -6 addr show | grep -q "inet6.*scope global"; then
+    HAS_IPV6=true
+  fi
+
+  if $HAS_IPV4 && $HAS_IPV6; then
+    IP_STACK="dual"
+    echo -e "${GREEN}Detected IP Stack: Dual Stack (IPv4 + IPv6)${NC}"
+  elif $HAS_IPV4; then
+    IP_STACK="ipv4"
+    echo -e "${GREEN}Detected IP Stack: IPv4 Only${NC}"
+  elif $HAS_IPV6; then
+    IP_STACK="ipv6"
+    echo -e "${GREEN}Detected IP Stack: IPv6 Only${NC}"
+  else
+    echo -e "${RED}Warning: No global IP address detected!${NC}"
+    IP_STACK="none"
+  fi
+}
+
+detect_os
+detect_ip_stack
+
+# ask for server hostname
+# if leave blank, do not change
+echo -e "${GREEN}Please enter new hostname: (Leave blank to skip)${NC}"
+read user_hostname
+if [[ -n ${user_hostname} ]]; then
+  hostnamectl set-hostname $user_hostname
+  echo "127.0.0.1 localhost" > /etc/hosts
+  echo "127.0.0.1 $user_hostname" >> /etc/hosts
+  echo "$user_hostname" > /etc/hostname
 fi
 
-rm init.sh
+# ipv4 precedence over ipv6 (skip for ipv6-only servers)
+if [[ "$IP_STACK" != "ipv6" ]]; then
+  sed -i 's/#precedence ::ffff:0:0\/96  100/precedence ::ffff:0:0\/96  100/' /etc/gai.conf
+fi
+
+# bbr
+cat >>/etc/sysctl.d/local.conf<<EOF
+net.core.default_qdisc = fq
+net.ipv4.tcp_congestion_control = bbr
+net.ipv4.tcp_rmem = 8192 262144 536870912
+net.ipv4.tcp_wmem = 4096 16384 536870912
+net.ipv4.tcp_adv_win_scale = -2
+net.ipv4.tcp_notsent_lowat = 131072
+EOF
+sysctl --system
+
+# timedatectl
+apt purge ntp -y
+apt install systemd-timesyncd -y
+systemctl enable systemd-timesyncd --now
+timedatectl
+
+# some basic packages
+apt update -y
+apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync zip unzip vim ripgrep git gnupg build-essential logrotate resolvconf -y
+
+# dns
+resolvconf -u
+
+DNS_SERVERS=(
+  "8.8.8.8"
+  "1.1.1.1"
+  "8.8.4.4"
+  "2001:4860:4860::8888"
+  "2606:4700:4700::1111"
+)
+
+for server in "${DNS_SERVERS[@]}"; do
+  if grep -q "^nameserver $server" /etc/resolv.conf; then
+    echo "Nameserver $server exists in /etc/resolv.conf."
+  else
+    echo "Nameserver $server missing in /etc/resolv.conf. Adding to /etc/resolvconf/resolv.conf.d/tail."
+    echo "nameserver $server" >> /etc/resolvconf/resolv.conf.d/tail
+  fi
+done
+
+resolvconf -u
+
+# set zsh
+chsh -s `which zsh`
+
+mkdir -p /root/.zfunc
+
+# zshrc
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/init/init_zshrc.sh
+bash init_zshrc.sh
+rm init_zshrc.sh
+
+# Set timezone
+timedatectl set-timezone Asia/Hong_Kong
+echo "Asia/Hong_Kong" > /etc/timezone
+
+sed -i 's/^#\?Storage=.*/Storage=volatile/' /etc/systemd/journald.conf
+sed -i 's/^#\?SystemMaxUse=.*/SystemMaxUse=8M/' /etc/systemd/journald.conf
+sed -i 's/^#\?RuntimeMaxUse=.*/RuntimeMaxUse=8M/' /etc/systemd/journald.conf
+systemctl restart systemd-journald
+
+# ssh keys
+mkdir -p /root/.ssh
+echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP0kVbDmjFhOtyoli41xVYMqok5zQNWUkYbdHBvVpAb9 yistc' >> ~/.ssh/authorized_keys
+echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICJ+sdnCybIStkqj/lNE8LLu5EPtUwRHmMquMLJgT6RP' >> ~/.ssh/authorized_keys
+
+# permit root login and disable password login
+curl -o /etc/ssh/sshd_config -L "https://raw.githubusercontent.com/yistc/shell-scripts/main/init/ssh.conf"
+systemctl restart sshd
+
+# nftables & iptables & ufw
+apt remove --auto-remove nftables -y && apt purge nftables -y
+apt update && apt install iptables -y
+
+apt install ufw -y
+ufw allow ssh
+echo "y" | ufw enable
+
+# install dust
+tag_name=$(curl -s https://api.github.com/repos/bootandy/dust/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/bootandy/dust/releases/download/$tag_name/dust-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz"
+tar zxvf "dust-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz" "dust-$tag_name-${RUST_ARCH}-unknown-linux-gnu/dust"
+mv "dust-$tag_name-${RUST_ARCH}-unknown-linux-gnu/dust" /usr/local/bin
+chmod +x /usr/local/bin/dust
+rm -rf "dust-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz" "dust-$tag_name-${RUST_ARCH}-unknown-linux-gnu"
+
+# install lsd
+tag_name=$(curl -s https://api.github.com/repos/lsd-rs/lsd/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/lsd-rs/lsd/releases/download/$tag_name/lsd-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz"
+tar zxvf "lsd-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz"
+mv "lsd-$tag_name-${RUST_ARCH}-unknown-linux-gnu/lsd" /usr/local/bin
+chmod +x /usr/local/bin/lsd
+rm -rf "lsd-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz" "lsd-$tag_name-${RUST_ARCH}-unknown-linux-gnu"
+
+# lsd theme
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/lsd_theme.sh
+bash lsd_theme.sh
+rm lsd_theme.sh
+
+# install fd, an alternative to `find` written in Rust
+tag_name=$(curl -s https://api.github.com/repos/sharkdp/fd/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/sharkdp/fd/releases/download/$tag_name/fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz"
+tar zxvf "fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz"
+mv "fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu/fd" /usr/local/bin
+chmod +x /usr/local/bin/fd
+rm -rf "fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz" "fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu"
+
+# install btop
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/btop.sh
+bash btop.sh
+rm btop.sh
+
+# install procs
+tag_name=$(curl -s https://api.github.com/repos/dalance/procs/releases/latest | grep tag_name|cut -f4 -d "\"")
+if [[ "$ARCH_TYPE" == "amd64" ]]; then
+  curl -LO "https://github.com/dalance/procs/releases/download/${tag_name}/procs-${tag_name}-x86_64-linux.zip"
+  unzip "procs-${tag_name}-x86_64-linux.zip"
+  chmod +x procs
+  mv procs /usr/local/bin
+  rm -rf "procs-${tag_name}-x86_64-linux.zip"
+else
+  curl -LO "https://github.com/dalance/procs/releases/download/${tag_name}/procs-${tag_name}-aarch64-linux.zip"
+  unzip "procs-${tag_name}-aarch64-linux.zip"
+  chmod +x procs
+  mv procs /usr/local/bin
+  rm -rf "procs-${tag_name}-aarch64-linux.zip"
+fi
+
+# starship
+if [[ "$ARCH_TYPE" == "amd64" ]]; then
+  curl -LO https://github.com/starship/starship/releases/latest/download/starship-x86_64-unknown-linux-gnu.tar.gz
+  tar zxvf starship-x86_64-unknown-linux-gnu.tar.gz
+  mv starship /usr/local/bin/starship
+  rm starship-x86_64-unknown-linux-gnu.tar.gz
+else
+  curl -LO https://github.com/starship/starship/releases/latest/download/starship-aarch64-unknown-linux-musl.tar.gz
+  tar zxvf starship-aarch64-unknown-linux-musl.tar.gz
+  mv starship /usr/local/bin/starship
+  rm starship-aarch64-unknown-linux-musl.tar.gz
+fi
+
+mkdir -p ~/.config && touch ~/.config/starship.toml
+
+cat >>~/.config/starship.toml<<EOF
+[hostname]
+ssh_symbol=''
+EOF
+
+# install zoxide
+tag_name=$(curl -s https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/ajeetdsouza/zoxide/releases/download/$tag_name/zoxide_${tag_name#v}-1_${ARCH_TYPE}.deb"
+dpkg -i "zoxide_${tag_name#v}-1_${ARCH_TYPE}.deb"
+rm "zoxide_${tag_name#v}-1_${ARCH_TYPE}.deb"
+
+# install bat
+tag_name=$(curl -s https://api.github.com/repos/sharkdp/bat/releases/latest | grep tag_name|cut -f4 -d "\"")
+curl -LO "https://github.com/sharkdp/bat/releases/download/${tag_name}/bat_${tag_name#v}_${ARCH_TYPE}.deb"
+dpkg -i "bat_${tag_name#v}_${ARCH_TYPE}.deb"
+rm -f "bat_${tag_name#v}_${ARCH_TYPE}.deb"
+
+echo 'export BAT_THEME="Solarized (light)"' >> ~/.zshrc
+
+# vim config
+curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.sh
+bash vim.sh
+rm vim.sh
+
+# locale (Ubuntu specific)
+if [[ "$OS" == "ubuntu" ]]; then
+  sed -i 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+  locale-gen
+  update-locale LANG=en_US.UTF-8
+fi
+
+# Swap
+SWAP=$(free | grep Swap | awk '{print $2}')
+
+if [ "$SWAP" -gt 0 ]; then
+  echo "Swap is enabled."
+else
+  echo -e "${GREEN}Swap is not enabled. Setting up swap ..${NC}"
+  fallocate -l 1G /var/swapfile
+  chmod 600 /var/swapfile
+  mkswap /var/swapfile
+  swapon /var/swapfile
+  echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab
+fi
+
+echo -e "${GREEN}Initialization complete!${NC}"

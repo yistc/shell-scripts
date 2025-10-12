@@ -71,3 +71,10 @@ if [ $? -eq 0 ]; then
     do_debian12_upgrade
     exit 0
 fi;
+
+echo $RELEASE | grep ' 12 '
+if [ $? -eq 0 ]; then
+    echo "[WARNING] Debian 12 detected. Please manually upgrade to Debian 13."
+    echo "[INFO] This script will be moved to archive directory."
+    exit 0
+fi;
