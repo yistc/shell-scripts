@@ -52,22 +52,9 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate python3 resolvconf -y
-
-# dns
-# sed -i 's/dns-nameservers 8.8.8.8.*/#dns-nameservers 8.8.8.8 1.1.1.1/g' /etc/network/interfaces
-# sed -i 's/dns-nameservers 2001:4860:4860::8888.*/#dns-nameservers 2001:4860:4860::8888 2606:4700:4700::1111/g' /etc/network/interfaces
+apt install sudo systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate resolvconf -y
 
 resolvconf -u
-# nameserver 8.8.8.8
-# nameserver 1.1.1.1
-# nameserver 8.8.4.4
-# nameserver 2001:4860:4860::8888
-# nameserver 2606:4700:4700::1111
-
-# check if /etc/resolv.conf contains each nameserver
-# if it does, continue
-# if not, add it to /etc/resolvconf/resolv.conf.d/tail
 
 DNS_SERVERS=(
     "8.8.8.8"

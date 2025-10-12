@@ -52,22 +52,10 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync zip unzip vim ripgrep git gnupg build-essential logrotate python3 resolvconf -y
+apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync zip unzip vim ripgrep git gnupg build-essential logrotate resolvconf -y
 
 # dns
-# sed -i 's/dns-nameservers 8.8.8.8.*/#dns-nameservers 8.8.8.8 1.1.1.1/g' /etc/network/interfaces
-# sed -i 's/dns-nameservers 2001:4860:4860::8888.*/#dns-nameservers 2001:4860:4860::8888 2606:4700:4700::1111/g' /etc/network/interfaces
-
 resolvconf -u
-# nameserver 8.8.8.8
-# nameserver 1.1.1.1
-# nameserver 8.8.4.4
-# nameserver 2001:4860:4860::8888
-# nameserver 2606:4700:4700::1111
-
-# check if /etc/resolv.conf contains each nameserver
-# if it does, continue
-# if not, add it to /etc/resolvconf/resolv.conf.d/tail
 
 DNS_SERVERS=(
     "8.8.8.8"
@@ -78,12 +66,12 @@ DNS_SERVERS=(
 )
 
 for server in "${DNS_SERVERS[@]}"; do
-    if grep -q "^nameserver $server" /etc/resolv.conf; then
-        echo "Nameserver $server exists in /etc/resolv.conf."
-    else
-        echo "Nameserver $server missing in /etc/resolv.conf. Adding to /etc/resolvconf/resolv.conf.d/tail."
-        echo "nameserver $server" >> /etc/resolvconf/resolv.conf.d/tail
-    fi
+  if grep -q "^nameserver $server" /etc/resolv.conf; then
+    echo "Nameserver $server exists in /etc/resolv.conf."
+  else
+    echo "Nameserver $server missing in /etc/resolv.conf. Adding to /etc/resolvconf/resolv.conf.d/tail."
+    echo "nameserver $server" >> /etc/resolvconf/resolv.conf.d/tail
+  fi
 done
 
 resolvconf -u
@@ -199,22 +187,16 @@ curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/config/vim.s
 bash vim.sh
 rm vim.sh
 
-# locale
-
 # Swap
 SWAP=$(free | grep Swap | awk '{print $2}')
 
 if [ "$SWAP" -gt 0 ]; then
-    echo "Swap is enabled."
+  echo "Swap is enabled."
 else
-    echo -e "${GREEN}Swap is not enabled. Setting up swap ..${NC}"
-    fallocate -l 1G /var/swapfile
-    chmod 600 /var/swapfile
-    mkswap /var/swapfile
-    swapon /var/swapfile
-    echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab
+  echo -e "${GREEN}Swap is not enabled. Setting up swap ..${NC}"
+  fallocate -l 1G /var/swapfile
+  chmod 600 /var/swapfile
+  mkswap /var/swapfile
+  swapon /var/swapfile
+  echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab
 fi
-
-# clean up
-# rm init.sh
-rm -f $0
