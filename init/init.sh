@@ -132,12 +132,7 @@ DNS_SERVERS=(
 )
 
 for server in "${DNS_SERVERS[@]}"; do
-  if grep -q "^nameserver $server" /etc/resolv.conf; then
-    echo "Nameserver $server exists in /etc/resolv.conf."
-  else
-    echo "Nameserver $server missing in /etc/resolv.conf. Adding to /etc/resolvconf/resolv.conf.d/tail."
-    echo "nameserver $server" >> /etc/resolvconf/resolv.conf.d/tail
-  fi
+  echo "nameserver $server" >> /etc/resolvconf/resolv.conf.d/tail
 done
 
 resolvconf -u
