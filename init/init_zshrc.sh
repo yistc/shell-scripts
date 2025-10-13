@@ -40,9 +40,9 @@ alias myip='curl -s http://checkip.amazonaws.com/'
 myip6() {
   curl -6 --location --request GET 'https://www.cloudflare.com/cdn-cgi/trace' 2>/dev/null | awk 'BEGIN { FS = "=" } ; $1 == "ip" { print $2 }'
 }
-alias tma='tmux attach -t'
-alias tmn='tmux new -s'
-alias tmk='tmux kill-session -t'
+# alias tma='tmux attach -t'
+# alias tmn='tmux new -s'
+# alias tmk='tmux kill-session -t'
 alias x='extract'
 alias z='__zoxide_z'
 alias sst='ss -tnlp'
