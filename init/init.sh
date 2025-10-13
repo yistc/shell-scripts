@@ -269,6 +269,16 @@ if [[ "$OS" == "ubuntu" ]]; then
   update-locale LANG=en_US.UTF-8
 fi
 
+# adjust reserved space with tune2fs
+ROOT_DEV=$(findmnt -n -o SOURCE /)
+FS_TYPE=$(findmnt -n -o FSTYPE /)
+if [[ "$FS_TYPE" == ext* ]]; then
+  echo "Setting reserved blocks to 0% for $ROOT_DEV"
+  tune2fs -m 0 "$ROOT_DEV"
+else
+  echo "Filesystem on / is not ext-type ($FS_TYPE), skipping."
+fi
+
 # Swap
 SWAP=$(free | grep Swap | awk '{print $2}')
 
