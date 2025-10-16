@@ -118,7 +118,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync zip unzip vim ripgrep git gnupg build-essential logrotate resolvconf -y
+apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate resolvconf -y
 
 # dns
 resolvconf -u

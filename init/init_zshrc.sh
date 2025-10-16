@@ -21,7 +21,7 @@ alias pscpu='ps aux --sort=%cpu'
 
 # procs
 alias pcs='procs'
-alias pcsmem='procs --sortd mem'
+alias pcsmem='procs --sortd rss'
 alias pcscpu='procs --sortd cpu'
 
 # ufw
