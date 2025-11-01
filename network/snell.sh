@@ -54,7 +54,6 @@ User=root
 LimitNOFILE=102400
 LimitNPROC=102400
 LimitAS=infinity
-LimitCORE=infinity
 ExecStart=/usr/local/bin/snell -c /etc/snell/snell.conf
 StandardOutput=journal
 StandardError=journal
