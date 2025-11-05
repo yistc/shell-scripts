@@ -56,6 +56,8 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+LimitNOFILE=102400
+LimitNPROC=102400
 ExecStart=/usr/local/bin/stls --v3 server --listen ::0:$PROXY_PORT --server 127.0.0.1:$SNELL_PORT --tls gateway.icloud.com --password $PASS
 StandardOutput=journal
 StandardError=journal
