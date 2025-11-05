@@ -293,4 +293,7 @@ else
   echo "/var/swapfile swap swap defaults 0 0" >> /etc/fstab
 fi
 
+# stop exim4
+systemctl stop exim4 && systemctl disable exim4 && apt purge --autoremove exim4-base exim4-config exim4-daemon-light
+
 echo -e "${GREEN}Initialization complete!${NC}"
