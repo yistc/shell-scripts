@@ -63,10 +63,10 @@ WantedBy=multi-user.target
 EOF
 
 # cron to restart snell everyday
-crontab -l > mycron
-echo "0 5 * * * systemctl restart snell" >> mycron
-crontab mycron
-rm mycron
+# crontab -l > mycron
+# echo "0 5 * * * systemctl restart snell" >> mycron
+# crontab mycron
+# rm mycron
 
 systemctl daemon-reload
 systemctl enable --now snell
