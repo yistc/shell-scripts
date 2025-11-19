@@ -36,12 +36,20 @@ alias sclist='systemctl list-units --type=service'
 
 # abbr
 alias dc='docker compose'
-alias myip='curl -s http://checkip.amazonaws.com/'
-myip6() {
-  curl -6 --location --request GET 'https://www.cloudflare.com/cdn-cgi/trace' 2>/dev/null | awk 'BEGIN { FS = "=" } ; $1 == "ip" { print $2 }'
+# alias myip='curl -s http://checkip.amazonaws.com/'
+# myip6() {
+#   curl -6 --location --request GET 'https://www.cloudflare.com/cdn-cgi/trace' 2>/dev/null | awk 'BEGIN { FS = "=" } ; $1 == "ip" { print $2 }'
+# }
+# alias myiploc='curl -4 -s https://www.cloudflare.com/cdn-cgi/trace | awk -F"=" "/loc/{print \$2}"'
+# alias myip6loc='curl -6 -s https://www.cloudflare.com/cdn-cgi/trace | awk -F"=" "/loc/{print \$2}"'
+myip() {
+  v4=$(curl -4 -s https://www.cloudflare.com/cdn-cgi/trace)
+  v6=$(curl -6 -s https://www.cloudflare.com/cdn-cgi/trace)
+
+  echo "IPv4: $(echo "$v4" | awk -F= '/ip/{print $2}') ($(echo "$v4" | awk -F= '/loc/{print $2}'))"
+  echo "IPv6: $(echo "$v6" | awk -F= '/ip/{print $2}') ($(echo "$v6" | awk -F= '/loc/{print $2}'))"
 }
-alias myiploc='curl -4 -s https://www.cloudflare.com/cdn-cgi/trace | awk -F"=" "/loc/{print \$2}"'
-alias myip6loc='curl -6 -s https://www.cloudflare.com/cdn-cgi/trace | awk -F"=" "/loc/{print \$2}"'
+
 # alias tma='tmux attach -t'
 # alias tmn='tmux new -s'
 # alias tmk='tmux kill-session -t'
