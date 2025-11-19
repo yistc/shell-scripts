@@ -297,3 +297,5 @@ fi
 systemctl stop exim4 && systemctl disable exim4 && apt purge --autoremove exim4-base exim4-config exim4-daemon-light
 
 echo -e "${GREEN}Initialization complete!${NC}"
+
+rm -f "$0"

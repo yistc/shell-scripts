@@ -1,7 +1,11 @@
-#! /bin/bash
+#!/bin/bash
 
 [[ $EUID -ne 0 ]] && echo "Error: This script must be run as root!" && exit 1
 
+_exit() {
+  echo -e "${RED}Exiting...${NC}"
+  exit 1
+}
 trap _exit INT QUIT TERM
 
 # Colors for output
@@ -79,21 +83,17 @@ else
     DISTRO="unknown"
 fi
 
-_exit() {
-    echo -e "${RED}Exiting...${NC}"
-    exit 1
-}
-for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done
+for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do apt remove $pkg -y; done
 
 apt update -y
 install -m 0755 -d /etc/apt/keyrings
 
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+curl -fsSL https://download.docker.com/linux/debian/gpg | \gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 chmod a+r /etc/apt/keyrings/docker.gpg
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian \
   $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  \tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt update -y
 apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
@@ -110,6 +110,8 @@ docker -v
 # docker-compose -v
 
 # limiting log size
+## backup existing daemon.json if exists
+[ -f /etc/docker/daemon.json ] && cp /etc/docker/daemon.json /etc/docker/daemon.json.bak
 cat >/etc/docker/daemon.json<<EOF
 {
   "log-driver": "json-file",
@@ -125,4 +127,4 @@ EOF
 
 systemctl restart docker
 
-rm -f $0
+rm -f "$0"
