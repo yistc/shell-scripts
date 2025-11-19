@@ -1,6 +1,11 @@
-#! /bin/bash
+#!/bin/bash
 
 [[ $EUID -ne 0 ]] && echo "Error: This script must be run as root!" && exit 1
+
+_exit() {
+  echo -e "${RED}Exiting...${NC}"
+  exit 1
+}
 
 trap _exit INT QUIT TERM
 
@@ -45,11 +50,6 @@ else
   DISTRO="unknown"
 fi
 
-_exit() {
-  echo -e "${RED}Exiting...${NC}"
-  exit 1
-}
-
 example_conf() {
 cat >> /etc/nginx/conf.d/example <<EOF
 server {
@@ -68,7 +68,7 @@ server {
   ssl_reject_handshake on;
   ssl_session_cache shared:MozSSL:10m;  # about 40000 sessions
   ssl_session_tickets off;
-  
+
   client_max_body_size 2G;
 
   # ssl_dhparam /etc/nginx/dhparam.pem;
@@ -82,7 +82,7 @@ server {
 
   resolver 8.8.8.8 1.1.1.1 8.8.4.4 valid=600s;
   resolver_timeout 10s;
-  
+
   location / {
     proxy_pass http://127.0.0.1:8000;
 
@@ -129,19 +129,19 @@ echo -e "${GREEN}Distro: ${DISTRO}${NC}"
 systemctl stop nginx
 apt remove nginx -y
 apt update -y && apt upgrade -y
-apt install sudo curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
+apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
 
 curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
-| sudo tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+| tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
 
 gpg --dry-run --quiet --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg
 
 echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
 http://nginx.org/packages/debian `lsb_release -cs` nginx" \
-| sudo tee /etc/apt/sources.list.d/nginx.list
+| tee /etc/apt/sources.list.d/nginx.list
 
 echo -e "Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n" \
-| sudo tee /etc/apt/preferences.d/99nginx
+| tee /etc/apt/preferences.d/99nginx
 
 apt update && apt install nginx -y
 mkdir -p /etc/nginx/certs
