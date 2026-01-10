@@ -118,7 +118,7 @@ timedatectl
 
 # some basic packages
 apt update -y
-apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate resolvconf -y
+apt install sudo curl wget systemd-timesyncd xz-utils lsb-release ca-certificates dnsutils dpkg mtr-tiny zsh rsync unzip vim ripgrep git gnupg build-essential logrotate resolvconf btop -y
 
 # dns
 resolvconf -u
@@ -200,11 +200,6 @@ tar zxvf "fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz"
 mv "fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu/fd" /usr/local/bin
 chmod +x /usr/local/bin/fd
 rm -rf "fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu.tar.gz" "fd-$tag_name-${RUST_ARCH}-unknown-linux-gnu"
-
-# install btop
-curl -LO https://raw.githubusercontent.com/yistc/shell-scripts/main/install/btop.sh
-bash btop.sh
-rm btop.sh
 
 # install procs
 tag_name=$(curl -s https://api.github.com/repos/dalance/procs/releases/latest | grep tag_name|cut -f4 -d "\"")
