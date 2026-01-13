@@ -128,7 +128,7 @@ echo -e "${GREEN}Distro: ${DISTRO}${NC}"
 
 systemctl stop nginx
 apt remove nginx -y
-apt update -y && apt upgrade -y
+apt update -y
 apt install curl gnupg2 ca-certificates lsb-release debian-archive-keyring -y
 
 curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
