@@ -171,6 +171,8 @@ chmod 700 /home/yistc/.ssh
 cp ~/.ssh/authorized_keys /home/yistc/.ssh/
 chmod 600 /home/yistc/.ssh/authorized_keys
 chown -R yistc:yistc /home/yistc/.ssh
+# create an empty .zshrc for the new user
+touch /home/yistc/.zshrc
 
 # ssh keys
 mkdir -p /root/.ssh
