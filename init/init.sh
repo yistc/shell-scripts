@@ -253,6 +253,9 @@ mkdir -p ~/.config && touch ~/.config/starship.toml
 cat >>~/.config/starship.toml<<EOF
 [hostname]
 ssh_symbol=''
+
+[directory]
+truncation_length = 1
 EOF
 
 # install zoxide
