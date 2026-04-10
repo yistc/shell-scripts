@@ -156,23 +156,23 @@ sed -i 's/^#\?SystemMaxUse=.*/SystemMaxUse=8M/' /etc/systemd/journald.conf
 sed -i 's/^#\?RuntimeMaxUse=.*/RuntimeMaxUse=8M/' /etc/systemd/journald.conf
 systemctl restart systemd-journald
 
-# create user yistc
-echo -e "${GREEN}Please enter password for user yistc:${NC}"
-read -s user_password
-echo
+# # create user yistc
+# echo -e "${GREEN}Please enter password for user yistc:${NC}"
+# read -s user_password
+# echo
 
-# create user with password and add to sudo group
-useradd -m -s /bin/zsh -G sudo yistc
-echo "yistc:$user_password" | chpasswd
+# # create user with password and add to sudo group
+# useradd -m -s /bin/zsh -G sudo yistc
+# echo "yistc:$user_password" | chpasswd
 
-# add public key to user
-mkdir -p /home/yistc/.ssh
-chmod 700 /home/yistc/.ssh
-cp ~/.ssh/authorized_keys /home/yistc/.ssh/
-chmod 600 /home/yistc/.ssh/authorized_keys
-chown -R yistc:yistc /home/yistc/.ssh
-# create an empty .zshrc for the new user
-touch /home/yistc/.zshrc
+# # add public key to user
+# mkdir -p /home/yistc/.ssh
+# chmod 700 /home/yistc/.ssh
+# cp ~/.ssh/authorized_keys /home/yistc/.ssh/
+# chmod 600 /home/yistc/.ssh/authorized_keys
+# chown -R yistc:yistc /home/yistc/.ssh
+# # create an empty .zshrc for the new user
+# touch /home/yistc/.zshrc
 
 # ssh keys
 mkdir -p /root/.ssh
