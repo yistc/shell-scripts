@@ -162,11 +162,6 @@ Group=node_exporter
 Type=simple
 ExecStart=/usr/local/bin/node_exporter \
   --web.listen-address=0.0.0.0:9100 \
-  --collector.disable-defaults \
-  --collector.filesystem \
-  --collector.meminfo \
-  --collector.loadavg \
-  --collector.uname \
   --collector.textfile \
   --collector.textfile.directory=/var/lib/node_exporter/textfile \
   --web.disable-exporter-metrics
