@@ -1,8 +1,10 @@
-#! /bin/bash
+#!/bin/bash
+set -Eeuo pipefail
 
-[[ $EUID -ne 0 ]] && echo "Error: This script must be run as root!" && exit 1
-
+TMP=""
+trap '[[ -n "$TMP" ]] && rm -rf -- "$TMP"' EXIT
 trap _exit INT QUIT TERM
+[[ $EUID -ne 0 ]] && echo "Error: This script must be run as root!" && exit 1
 
 # Colors for output
 RED='\033[0;31m'
@@ -14,25 +16,67 @@ CYAN='\033[0;36m'
 WHITE='\033[0;37m'
 NC='\033[0m' # No Color
 
-OS=$(uname -s) # Linux, FreeBSD, Darwin
-ARCH=$(uname -m) # x86_64, arm64, aarch64
-DISTRO=$( ([[ -e "/usr/bin/yum" ]] && echo 'CentOS') || ([[ -e "/usr/bin/apt" ]] && echo 'Debian') || echo 'unknown' )
+OS=$(uname -s)
+ARCH=$(uname -m)
 
 _exit() {
     echo -e "${RED}Exiting...${NC}"
     exit 1
 }
 
+is_valid_ipv4() {
+    local ip=$1
+    local octet
+    local -a octets
+
+    IFS=. read -r -a octets <<< "$ip"
+    [[ ${#octets[@]} -eq 4 ]] || return 1
+    for octet in "${octets[@]}"; do
+        [[ "$octet" =~ ^[0-9]{1,3}$ ]] || return 1
+        (( 10#$octet <= 255 )) || return 1
+    done
+}
+
 while getopts s: opt; do
     case $opt in
         s)
-            server_id=$OPTARG
+            monitor_ip=$OPTARG
+            ;;
+        :)
+            echo "Option -$OPTARG requires an argument" >&2
+            exit 1
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
+            exit 1
             ;;
     esac
 done
+shift $((OPTIND - 1))
+
+monitor_ip=${monitor_ip:-}
+if [[ -n "$monitor_ip" ]] && ! is_valid_ipv4 "$monitor_ip"; then
+    echo "Invalid monitor IPv4 address: $monitor_ip" >&2
+    exit 1
+fi
+
+if [[ "$OS" != "Linux" ]] || [[ ! -r /etc/os-release ]]; then
+    echo "Error: this script supports Debian/Ubuntu Linux only" >&2
+    exit 1
+fi
+. /etc/os-release
+if [[ "${ID:-}" != "debian" && "${ID:-}" != "ubuntu" ]]; then
+    echo "Error: unsupported distribution: ${ID:-unknown}" >&2
+    exit 1
+fi
+command -v systemctl >/dev/null || {
+    echo "Error: systemd is required" >&2
+    exit 1
+}
+if [[ -n "$monitor_ip" ]] && ! command -v ufw >/dev/null; then
+    echo "Error: ufw is required when -s is used" >&2
+    exit 1
+fi
 
 BIN=/usr/local/bin/node_exporter
 UNIT=/etc/systemd/system/node_exporter.service
@@ -61,7 +105,8 @@ else
         exit 1
     fi
 
-    TMP=$(mktemp -d) && cd "$TMP"
+    TMP=$(mktemp -d)
+    cd "$TMP"
     PKG="node_exporter-${VER}.linux-${ARCH_NAME}"
     curl -fsSLO "https://github.com/prometheus/node_exporter/releases/download/$tag_name/$PKG.tar.gz"
     curl -fsSLO "https://github.com/prometheus/node_exporter/releases/download/$tag_name/sha256sums.txt"
@@ -69,8 +114,7 @@ else
     tar xzf "$PKG.tar.gz"
 
     [[ -n "$OLD" ]] && systemctl stop node_exporter 2>/dev/null || true
-    install -o root -g root -m 0755 "$PKG/node_exporter" "$BIN"
-    cd - >/dev/null && rm -rf "$TMP"
+    install -o root -g root -m 0755 "$TMP/$PKG/node_exporter" "$BIN"
 
     CHANGED=1
     [[ -z "$OLD" ]] && echo -e "${GREEN}binary: installed v$VER${NC}" || echo -e "${GREEN}binary: upgraded $OLD -> $VER${NC}"
@@ -143,15 +187,18 @@ else
 fi
 
 # ---------- UFW（-s 传监控机 IP 时配） ----------
-if [[ -n "${server_id:-}" ]]; then
-    if ufw status | grep -q "$server_id"; then
+if [[ -n "$monitor_ip" ]]; then
+    if ufw status | grep -Fq -- "$monitor_ip"; then
         echo -e "${GREEN}ufw: rule exists${NC}"
     else
-        ufw allow from "$server_id" to any port 9100 proto tcp comment "node_exporter"
-        echo -e "${GREEN}ufw: allowed $server_id -> :9100${NC}"
+        ufw allow from "$monitor_ip" to any port 9100 proto tcp comment "node_exporter" || {
+            echo -e "${RED}ufw: failed to allow $monitor_ip -> :9100${NC}" >&2
+            exit 1
+        }
+        echo -e "${GREEN}ufw: allowed $monitor_ip -> :9100${NC}"
     fi
 else
-    echo -e "${YELLOW}tip: -s <监控机IP> 会自动加 ufw 白名单${NC}"
+    echo -e "${YELLOW}tip: -s <监控机IPv4> 会自动加 ufw 白名单${NC}"
 fi
 
 # ---------- 验证 ----------
