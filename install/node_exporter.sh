@@ -80,8 +80,8 @@ if command -v docker >/dev/null && docker ps --format '{{.Image}} {{.Names}}' 2>
     echo -e "${BLUE}VictoriaMetrics Docker detected: skip ufw configuration${NC}"
 fi
 
-if [[ "$IS_VM_SERVER" == 0 && -n "$monitor_ip" ]] && ! command -v ufw >/dev/null; then
-    echo "Error: ufw is required when -s is used on a non-VictoriaMetrics server" >&2
+if [[ "$IS_VM_SERVER" == 1 || -n "$monitor_ip" ]] && ! command -v ufw >/dev/null; then
+    echo "Error: ufw is required to configure node_exporter access" >&2
     exit 1
 fi
 
@@ -89,6 +89,11 @@ BIN=/usr/local/bin/node_exporter
 UNIT=/etc/systemd/system/node_exporter.service
 TEXTFILE_DIR=/var/lib/node_exporter/textfile
 CHANGED=0
+BINARY_ACTION="not changed"
+USER_ACTION="already existed"
+UNIT_ACTION="unchanged"
+SERVICE_ACTION="not started"
+FIREWALL_ACTION="not configured"
 
 # ---------- 目标版本（GitHub latest） ----------
 tag_name=$(curl -fsSL https://api.github.com/repos/prometheus/node_exporter/releases/latest | grep tag_name | cut -f4 -d "\"")
@@ -101,6 +106,7 @@ OLD=""
 [[ -x "$BIN" ]] && OLD=$($BIN --version | head -1 | awk '{print $3}')
 
 if [[ "$OLD" == "$VER" ]]; then
+    BINARY_ACTION="already v$VER"
     echo -e "${GREEN}binary: already v$VER, skip${NC}"
 else
     if [[ "$ARCH" == "x86_64" ]]; then
@@ -124,12 +130,19 @@ else
     install -o root -g root -m 0755 "$TMP/$PKG/node_exporter" "$BIN"
 
     CHANGED=1
-    [[ -z "$OLD" ]] && echo -e "${GREEN}binary: installed v$VER${NC}" || echo -e "${GREEN}binary: upgraded $OLD -> $VER${NC}"
+    if [[ -z "$OLD" ]]; then
+        BINARY_ACTION="installed v$VER"
+        echo -e "${GREEN}binary: installed v$VER${NC}"
+    else
+        BINARY_ACTION="upgraded $OLD -> $VER"
+        echo -e "${GREEN}binary: upgraded $OLD -> $VER${NC}"
+    fi
 fi
 
 # ---------- 用户 & textfile 目录 ----------
 if ! id node_exporter &>/dev/null; then
     useradd --system --no-create-home --shell /usr/sbin/nologin node_exporter
+    USER_ACTION="created"
     echo -e "${GREEN}user: created${NC}"
 fi
 install -d -o root -g root -m 0755 "$TEXTFILE_DIR"
@@ -175,6 +188,7 @@ if ! cmp -s "$UNIT_NEW" "$UNIT" 2>/dev/null; then
     install -m 0644 "$UNIT_NEW" "$UNIT"
     systemctl daemon-reload
     CHANGED=1
+    UNIT_ACTION="updated"
     echo -e "${GREEN}unit: updated${NC}"
 else
     echo -e "${GREEN}unit: unchanged${NC}"
@@ -185,28 +199,44 @@ rm -f "$UNIT_NEW"
 systemctl enable node_exporter >/dev/null 2>&1 || true   # enable 本身幂等
 if [[ "$CHANGED" == 1 ]]; then
     systemctl restart node_exporter
+    SERVICE_ACTION="restarted"
     echo -e "${GREEN}service: restarted${NC}"
 elif systemctl is-active --quiet node_exporter; then
+    SERVICE_ACTION="already running"
     echo -e "${GREEN}service: already running${NC}"
 else
     systemctl start node_exporter
+    SERVICE_ACTION="started"
     echo -e "${GREEN}service: started${NC}"
 fi
 
-# ---------- UFW（-s 传监控机 IP 时配） ----------
+# ---------- UFW（Docker 监控机放行 Docker bridge；其他主机按监控机 IPv4 放行） ----------
 if [[ "$IS_VM_SERVER" == 1 ]]; then
-    echo -e "${GREEN}ufw: skipped on VictoriaMetrics server${NC}"
+    if ufw status | grep -Fq -- "172.16.0.0/12"; then
+        FIREWALL_ACTION="Docker bridge rule already existed"
+        echo -e "${GREEN}ufw: Docker bridge rule exists${NC}"
+    else
+        ufw allow from 172.16.0.0/12 to any port 9100 proto tcp comment "node_exporter from docker" || {
+            echo -e "${RED}ufw: failed to allow Docker bridge -> :9100${NC}" >&2
+            exit 1
+        }
+        FIREWALL_ACTION="allowed Docker bridge 172.16.0.0/12"
+        echo -e "${GREEN}ufw: allowed Docker bridge -> :9100${NC}"
+    fi
 elif [[ -n "$monitor_ip" ]]; then
     if ufw status | grep -Fq -- "$monitor_ip"; then
+        FIREWALL_ACTION="monitor IPv4 rule already existed"
         echo -e "${GREEN}ufw: rule exists${NC}"
     else
         ufw allow from "$monitor_ip" to any port 9100 proto tcp comment "node_exporter" || {
             echo -e "${RED}ufw: failed to allow $monitor_ip -> :9100${NC}" >&2
             exit 1
         }
+        FIREWALL_ACTION="allowed monitor IPv4 $monitor_ip"
         echo -e "${GREEN}ufw: allowed $monitor_ip -> :9100${NC}"
     fi
 else
+    FIREWALL_ACTION="not configured (no -s provided)"
     echo -e "${YELLOW}tip: -s <监控机IPv4> 会自动加 ufw 白名单${NC}"
 fi
 
@@ -218,3 +248,20 @@ else
     echo -e "${RED}node_exporter is not healthy, check: journalctl -u node_exporter${NC}"
     exit 1
 fi
+
+echo
+echo "========== node_exporter report =========="
+echo "platform: $ID Linux / $ARCH"
+echo "target version: $VER"
+echo "binary: $BINARY_ACTION"
+echo "user node_exporter: $USER_ACTION"
+echo "systemd unit: $UNIT_ACTION"
+echo "service: $SERVICE_ACTION"
+if [[ "$IS_VM_SERVER" == 1 ]]; then
+    echo "branch: VictoriaMetrics Docker server"
+else
+    echo "branch: regular server"
+fi
+echo "ufw: $FIREWALL_ACTION"
+echo "metrics: http://127.0.0.1:9100/metrics healthy"
+echo "==========================================="
