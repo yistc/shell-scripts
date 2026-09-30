@@ -73,8 +73,15 @@ command -v systemctl >/dev/null || {
     echo "Error: systemd is required" >&2
     exit 1
 }
-if [[ -n "$monitor_ip" ]] && ! command -v ufw >/dev/null; then
-    echo "Error: ufw is required when -s is used" >&2
+
+IS_VM_SERVER=0
+if command -v docker >/dev/null && docker ps --format '{{.Image}} {{.Names}}' 2>/dev/null | grep -Eiq 'victoria[-_]metrics|victoriametrics'; then
+    IS_VM_SERVER=1
+    echo -e "${BLUE}VictoriaMetrics Docker detected: skip ufw configuration${NC}"
+fi
+
+if [[ "$IS_VM_SERVER" == 0 && -n "$monitor_ip" ]] && ! command -v ufw >/dev/null; then
+    echo "Error: ufw is required when -s is used on a non-VictoriaMetrics server" >&2
     exit 1
 fi
 
@@ -187,7 +194,9 @@ else
 fi
 
 # ---------- UFW（-s 传监控机 IP 时配） ----------
-if [[ -n "$monitor_ip" ]]; then
+if [[ "$IS_VM_SERVER" == 1 ]]; then
+    echo -e "${GREEN}ufw: skipped on VictoriaMetrics server${NC}"
+elif [[ -n "$monitor_ip" ]]; then
     if ufw status | grep -Fq -- "$monitor_ip"; then
         echo -e "${GREEN}ufw: rule exists${NC}"
     else
